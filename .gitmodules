@@ -1,0 +1,3 @@
+[submodule "NinjaTower/Packages/com.carotaa.code.base"]
+	path = NinjaTower/Packages/com.carotaa.code.base
+	url = https://gitee.com/carotaa666/codebase
