@@ -1,13 +1,12 @@
+using System;
 using UnityEngine;
 
-namespace NinjaTower
+namespace NinjaTower.Battle
 {
 	// rb & collider
 	[RequireComponent(typeof(Rigidbody2D))]
 	public abstract class PhysicsActor : MonoBehaviour
 	{
-		public const float SpeedScaler = 0.001f;
-
 		public EnvManager m_Manager;
 		public Rigidbody2D m_Rb;
 		public Collider2D m_Collider;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NinjaTower
+namespace NinjaTower.Battle
 {
 	public class Path : MonoBehaviour
 	{
@@ -23,6 +23,11 @@ namespace NinjaTower
 		{
 			var pos = (_end - _start) * progress + _start;
 			return pos;
+		}
+
+		public float GetLength()
+		{
+			return (_end - _start).magnitude;
 		}
 	}
 }
