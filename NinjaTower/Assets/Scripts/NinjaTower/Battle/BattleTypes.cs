@@ -9,6 +9,7 @@ namespace NinjaTower.Battle
 		public readonly int ID;
 		public readonly string Address;
 		public int MaxHp = 10;
+		public int Damage = 1;
 		
 		public EnemyType (string address, int id)
 		{

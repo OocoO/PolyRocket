@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Carotaa.Code;
+using NinjaTower.UI;
 using UnityEngine;
 
 namespace NinjaTower.Battle
@@ -12,12 +14,13 @@ namespace NinjaTower.Battle
 			public const string Enemy = "Enemy";
 		}
 
-		public Action<Enemy> EnemyEnterCastle;
+		public IntVariable PlayerHp = new IntVariable();
 		// public Action EnemyDestroy;
 
 		public List<Enemy> _enemies;
 
 		public GameObject m_Enemy;
+		public GameHud m_Hud;
 
 		private void Awake()
 		{
@@ -45,6 +48,26 @@ namespace NinjaTower.Battle
 		public List<Enemy> GetAllEnemies()
 		{
 			return new List<Enemy>(_enemies);
+		}
+
+		public void OnEnemyEnterCastle (Enemy e)
+		{
+			PlayerHp.Value -= e.Type.Damage;
+			Debug.Log("Enemy Enter Castle");
+			DestroyEnemy(e);
+		}
+
+		private void Start()
+		{
+			// start game directly;
+			OnStartGame();
+		}
+
+		public void OnStartGame()
+		{
+			PlayerHp.Value = 20;
+			
+			m_Hud.Init(this);
 		}
 	}
 }

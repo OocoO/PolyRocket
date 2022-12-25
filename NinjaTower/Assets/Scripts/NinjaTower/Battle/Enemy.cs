@@ -50,9 +50,7 @@ namespace NinjaTower.Battle
 		{
 			if (other.gameObject.CompareTag(EnvManager.Tag.Castle))
 			{
-				m_Manager.EnemyEnterCastle?.Invoke(this);
-				Debug.Log("Enemy Enter Castle");
-				m_Manager.DestroyEnemy(this);
+				m_Manager.OnEnemyEnterCastle(this);
 			}
 		}
 
