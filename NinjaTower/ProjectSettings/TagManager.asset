@@ -20,7 +20,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Env
   - 
   - 
   - 
@@ -42,4 +42,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Game
+    uniqueID: 3197894133
+    locked: 0
+  - name: UI
+    uniqueID: 2666007305
+    locked: 0
+  - name: Pop
+    uniqueID: 4108112419
     locked: 0

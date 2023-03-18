@@ -69,7 +69,6 @@ namespace Carotaa.Code.Editor
             {
                 var data = www.downloadHandler.data;
                 File.WriteAllBytes(destPath, data);
-                EventTrack.LogTrace($"File Downloader: Save File {destPath}");
             }
         }
     }

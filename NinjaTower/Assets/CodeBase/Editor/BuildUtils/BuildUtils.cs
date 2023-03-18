@@ -7,8 +7,6 @@ namespace Carotaa.Code.Editor
         public static void StartBuild()
         {
             var path = GetScriptArg("--path");
-
-            EventTrack.LogTrace($"Build Success at {path}");
         }
 
         private static string GetScriptArg(string name)

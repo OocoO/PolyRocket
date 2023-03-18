@@ -151,7 +151,6 @@ namespace Carotaa.Code
 
             _isRaising = true;
 #endif
-            EventTrack.LogTrace($"ShareEvent {Name} Begin");
         }
 
         protected void EndRaise()
@@ -159,7 +158,6 @@ namespace Carotaa.Code
 #if DEBUG
             _isRaising = false;
 #endif
-            EventTrack.LogTrace($"ShareEvent {Name} End");
         }
     }
 

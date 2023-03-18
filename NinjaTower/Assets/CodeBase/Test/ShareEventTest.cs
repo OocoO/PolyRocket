@@ -13,7 +13,7 @@ namespace Carotaa.Code.Test
             var e = ShareEvent.BuildEvent("Test");
             e.Raise();
 
-            e.Subscribe(() => { EventTrack.LogTrace("Hello World"); });
+            e.Subscribe(() => { });
 
             e.Raise();
         }

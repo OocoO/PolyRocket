@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Carotaa.Code
@@ -18,14 +19,14 @@ namespace Carotaa.Code
             Instance.WakeUp();
         }
 
-        public static void LogError(object e)
+        public static void LogError(object message, Exception e = null)
         {
             Debug.LogError(e);
         }
 
-        public static void LogTrace(object e)
+        public static void Log(object message)
         {
-            Instance._trace.Add(e);
+            Debug.Log(message);
         }
     }
 }
