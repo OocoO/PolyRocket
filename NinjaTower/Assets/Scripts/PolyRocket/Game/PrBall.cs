@@ -23,6 +23,8 @@ namespace PolyRocket
         private bool _isMoving;
         private PrGameLauncher _launcher;
 
+        private bool _isSuccess;
+        private bool _isControl;
         public void Init(PrGameLauncher launcher)
         {
             _launcher = launcher;
@@ -38,15 +40,39 @@ namespace PolyRocket
 
         private void Update()
         {
+            CheckIsSuccess();
+            CheckIsFailed();
+        }
+
+        private void CheckIsFailed()
+        {
             if (!_isMoving) return;
             
             var velocity = rb.velocity;
             if (velocity.magnitude <= 0.5f)
             {
-                rb.velocity = Vector2.zero;
-                // trigger event
-                _launcher.EPlayerMoveEnd.Raise();
+                StopMove();
             }
+        }
+
+        private void CheckIsSuccess()
+        {
+            if (_isSuccess)
+            {
+                _launcher.EPlayerMoveToTarget.Raise();
+                // stop move
+                StopMove();
+            }
+        }
+
+        private void StopMove()
+        {
+            rb.velocity = Vector2.zero;
+            // trigger event
+            _isMoving = false;
+            _isSuccess = false;
+            CancelInvoke(nameof(StartCheckSpeed));
+            _launcher.EPlayerMoveEnd.Raise();
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -56,10 +82,24 @@ namespace PolyRocket
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!_isControl) return;
+            
+            // do something
         }
 
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (_launcher.PlayerMoveLock) return;
+
+            _isControl = true;
+            
+            SetAimVisible(true);
+        }
+        
         public void OnDrag(PointerEventData eventData)
         {
+            if (!_isControl) return;
+            
             var direct = GetAimDirect(eventData);
             var rotate = Quaternion.FromToRotation(Vector3.right, direct);
 
@@ -68,14 +108,11 @@ namespace PolyRocket
             aimLength.localScale = Vector3.one;
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            
-            SetAimVisible(true);
-        }
-
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (!_isControl) return;
+
+            _isControl = false;
             var direct = GetAimDirect(eventData);
 
             _launcher.EPlayerMoveStart.Raise();
@@ -103,9 +140,13 @@ namespace PolyRocket
 
         }
 
-        public void Reset()
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            
+            if (other.gameObject.CompareTag("Flag"))
+            {
+                // mark game over
+                _isSuccess = true;
+            }
         }
     }
 }

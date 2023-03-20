@@ -7,5 +7,7 @@ namespace PolyRocket.Game
         public int version;
 
         public PrBall ball;
+
+        public int maxStepCount;
     }
 }

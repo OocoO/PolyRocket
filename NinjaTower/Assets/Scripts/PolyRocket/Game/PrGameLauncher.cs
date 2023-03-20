@@ -24,8 +24,14 @@ namespace PolyRocket.Game
         
         public Camera mainCamera;
 
-        public ShareEvent EPlayerMoveStart = ShareEvent.BuildEvent("EPlayerMoveStart");
-        public ShareEvent EPlayerMoveEnd = ShareEvent.BuildEvent("EPlayerMoveEnd");
+        public ShareEvent EPlayerMoveStart = ShareEvent.BuildEvent(nameof(EPlayerMoveStart));
+        public ShareEvent EPlayerMoveEnd = ShareEvent.BuildEvent(nameof(EPlayerMoveEnd));
+        public ShareEvent EPlayerMoveToTarget = ShareEvent.BuildEvent(nameof(EPlayerMoveToTarget));
+        
+        private bool _isGameStart;
+        private int _moveStepRemain;
+
+        public bool PlayerMoveLock => _moveStepRemain <= 0;
 
         private void Awake()
         {
@@ -36,14 +42,13 @@ namespace PolyRocket.Game
         {
             Physics2D.gravity = Vector2.zero;
             mainCamera = Camera.main;
-            // gCaster.sortOrderPriority = 2;
-            // pCaster.sortOrderPriority = 1;
-            // pCaster.renderOrderPriority = 1;
-            
+
             levelOne.gameObject.SetActive(false);
             levelTwo.gameObject.SetActive(false);
 
+            EPlayerMoveStart.Subscribe(OnPlayerMoveStart);
             EPlayerMoveEnd.Subscribe(OnPlayerMoveEnd);
+            EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
 
             HidePop();
             
@@ -57,19 +62,48 @@ namespace PolyRocket.Game
             var go = Instantiate(level.gameObject, transform);
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
+            
+            // data init
+            _moveStepRemain = _currentLevel.maxStepCount;
             _currentLevel.ball.Init(this);
+
+            _isGameStart = true;
         }
 
-        private void OnRestartClick()
+        private void OnClickRestart()
         {
             // close ui
             HidePop();
             JumpToLevel(levelOne);
         }
 
+        private void OnPlayerMoveStart()
+        {
+            if (_moveStepRemain <= 0)
+            {
+                throw new Exception("Invalid Move");
+            }
+            
+            _moveStepRemain--;
+        }
+
         private void OnPlayerMoveEnd()
         {
-            ShowGameOver();
+            if (_isGameStart)
+            {
+                // game over: failed
+                _isGameStart = false;
+                ShowGameOver();
+            }
+        }
+
+        private void OnPlayerMoveToTarget()
+        {
+            if (_isGameStart)
+            {
+                _isGameStart = false;
+                ShowGameSuccess();
+            }
         }
 
         private void ShowGameOver()
@@ -78,10 +112,27 @@ namespace PolyRocket.Game
             popBtnText.text = "Restart";
 
             var onClick = new Button.ButtonClickedEvent();
-            onClick.AddListener(OnRestartClick);
+            onClick.AddListener(OnClickRestart);
             popBtn.onClick = onClick;
             
             uiPop.SetActive(true);
+        }
+
+        private void ShowGameSuccess()
+        {
+            popTitle.text = "Level Complete";
+            popBtnText.text = "Next";
+
+            var onClick = new Button.ButtonClickedEvent();
+            onClick.AddListener(OnClickGotoNext);
+            popBtn.onClick = onClick;
+            
+            uiPop.SetActive(true);
+        }
+
+        private void OnClickGotoNext()
+        {
+            JumpToLevel(levelTwo);
         }
 
         private void HidePop()
