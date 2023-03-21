@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128330386}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.04, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -642,7 +642,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 0
   ball: {fileID: 365708280}
-  maxStepCount: 1
+  maxStepCount: 4
 --- !u!1 &897617050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,6 +1085,8 @@ MonoBehaviour:
   popTitle: {fileID: 1157360197}
   popBtnText: {fileID: 1899119978}
   popBtn: {fileID: 897617052}
+  maxShotForce: 500
+  speedDecrease: 0.5
   pCaster: {fileID: 0}
   mainCamera: {fileID: 325686371}
 --- !u!1 &1377080188

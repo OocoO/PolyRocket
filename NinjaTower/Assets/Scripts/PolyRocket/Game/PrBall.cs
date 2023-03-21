@@ -19,7 +19,6 @@ namespace PolyRocket
         public Transform aimOrigin;
         public Transform aimLength;
 
-        private Vector2 _beginPos;
         private bool _isMoving;
         private PrGameLauncher _launcher;
 
@@ -35,7 +34,7 @@ namespace PolyRocket
         private void FixedUpdate()
         {
             var velocity = rb.velocity;
-            rb.AddForce(-velocity * 0.2f, ForceMode2D.Force);
+            rb.AddForce(-velocity * _launcher.speedDecrease, ForceMode2D.Force);
         }
 
         private void Update()
@@ -77,7 +76,6 @@ namespace PolyRocket
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _beginPos = eventData.position;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -91,9 +89,7 @@ namespace PolyRocket
         {
             if (_launcher.PlayerMoveLock) return;
 
-            _isControl = true;
-            
-            SetAimVisible(true);
+            SetControl(true);
         }
         
         public void OnDrag(PointerEventData eventData)
@@ -103,21 +99,32 @@ namespace PolyRocket
             var direct = GetAimDirect(eventData);
             var rotate = Quaternion.FromToRotation(Vector3.right, direct);
 
-            var scale = direct.magnitude;
+            var success = TryGetForceScale(eventData, out var scale);
+            SetAimVisible(success);
+
+            scale *= 0.5f;
+
+            var dis = scale * 4f + 1f;
             aimOrigin.rotation = rotate;
-            aimLength.localScale = Vector3.one;
+            aimLength.localScale = new Vector3(1f + scale, 1f - scale, 1f);
+            aimLength.localPosition = Vector3.right * dis;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             if (!_isControl) return;
 
-            _isControl = false;
+            SetControl(false);
+            
+            var shot = TryGetForceScale(eventData, out var scale);
+
+            if (!shot) return;
+            
             var direct = GetAimDirect(eventData);
 
             _launcher.EPlayerMoveStart.Raise();
             Invoke(nameof(StartCheckSpeed), 1f); // start check if ball stops moving
-            rb.AddForce(direct.normalized * 1000, ForceMode2D.Force);
+            rb.AddForce(direct.normalized * _launcher.maxShotForce * scale, ForceMode2D.Force);
             
             SetAimVisible(false);
         }
@@ -130,8 +137,23 @@ namespace PolyRocket
         private Vector2 GetAimDirect(PointerEventData eventData)
         {
             var pos = eventData.position;
-            var direct = _beginPos - pos;
+            var startPos = (Vector2) _launcher.mainCamera.WorldToScreenPoint(transform.position);
+            var direct = startPos - pos;
             return direct;
+        }
+
+        private bool TryGetForceScale(PointerEventData eventData, out float scale)
+        {
+            var direct = GetAimDirect(eventData);
+            scale = 0f;
+            var mag = direct.magnitude - _launcher.safeZoom;
+            if (mag < 0f)
+            {
+                return false;
+            }
+            scale = mag * 5f / ScreenUtility.Width;
+            scale = Mathf.Clamp(scale, 0.001f, 1f);
+            return true;
         }
 
         private void SetAimVisible(bool visible)
@@ -147,6 +169,13 @@ namespace PolyRocket
                 // mark game over
                 _isSuccess = true;
             }
+        }
+
+        private void SetControl(bool isControl)
+        {
+            _isControl = isControl;
+
+            // _launcher.SetPhysicsPause(isControl);
         }
     }
 }

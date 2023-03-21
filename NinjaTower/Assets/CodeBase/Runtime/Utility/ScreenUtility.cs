@@ -33,5 +33,17 @@ namespace Carotaa.Code
 #endif
             }
         }
+
+        public static Matrix4x4 World2ScreenMatrix(Camera cam)
+        {
+            var view2Screen = Matrix4x4.TRS (new Vector3 (0.5f * cam.pixelWidth, 0.5f * cam.pixelHeight, 0f),
+                Quaternion.identity, new Vector3 (0.5f * cam.pixelWidth, 0.5f * cam.pixelHeight, 1f));
+
+            var mat = view2Screen
+                                  * cam.projectionMatrix
+                                  * cam.worldToCameraMatrix;
+
+            return mat;
+        }
     }
 }

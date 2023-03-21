@@ -17,9 +17,11 @@ namespace PolyRocket.Game
         public TMP_Text popBtnText;
         public Button popBtn;
 
-        // public GraphicRaycaster gCaster;
-        public Physics2DRaycaster pCaster;
+        public int maxShotForce;
+        public float speedDecrease;
+        public float safeZoom; // the size of the ball: screen coord
 
+        private float _defaultFixedDeltaTime;
         private PrGameLevel _currentLevel;
         
         public Camera mainCamera;
@@ -42,6 +44,7 @@ namespace PolyRocket.Game
         {
             Physics2D.gravity = Vector2.zero;
             mainCamera = Camera.main;
+            _defaultFixedDeltaTime = Time.fixedDeltaTime;
 
             levelOne.gameObject.SetActive(false);
             levelTwo.gameObject.SetActive(false);
@@ -65,6 +68,9 @@ namespace PolyRocket.Game
             
             // data init
             _moveStepRemain = _currentLevel.maxStepCount;
+            var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
+            safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.GetComponent<CircleCollider2D>().radius;
+            
             _currentLevel.ball.Init(this);
 
             _isGameStart = true;
@@ -89,7 +95,7 @@ namespace PolyRocket.Game
 
         private void OnPlayerMoveEnd()
         {
-            if (_isGameStart)
+            if (_isGameStart && _moveStepRemain <= 0)
             {
                 // game over: failed
                 _isGameStart = false;
@@ -138,6 +144,11 @@ namespace PolyRocket.Game
         private void HidePop()
         {
             uiPop.SetActive(false);
+        }
+
+        public void SetPhysicsPause(bool isPause)
+        {
+            Time.fixedDeltaTime = isPause ? 0f : _defaultFixedDeltaTime;
         }
     }
 }
