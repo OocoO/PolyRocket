@@ -1,5 +1,6 @@
 using System;
 using Carotaa.Code;
+using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,11 +18,13 @@ namespace PolyRocket.Game
         public TMP_Text popBtnText;
         public Button popBtn;
 
+        public CinemachineVirtualCamera virtualCam;
+
         public int maxShotForce;
         public float speedDecrease;
         public float safeZoom; // the size of the ball: screen coord
 
-        private float _defaultFixedDeltaTime;
+        private PrGameLevel _levelPointer;
         private PrGameLevel _currentLevel;
         
         public Camera mainCamera;
@@ -44,7 +47,6 @@ namespace PolyRocket.Game
         {
             Physics2D.gravity = Vector2.zero;
             mainCamera = Camera.main;
-            _defaultFixedDeltaTime = Time.fixedDeltaTime;
 
             levelOne.gameObject.SetActive(false);
             levelTwo.gameObject.SetActive(false);
@@ -62,6 +64,7 @@ namespace PolyRocket.Game
         {
             if (_currentLevel) Destroy(_currentLevel.gameObject);
 
+            _levelPointer = level;
             var go = Instantiate(level.gameObject, transform);
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
@@ -70,6 +73,10 @@ namespace PolyRocket.Game
             _moveStepRemain = _currentLevel.maxStepCount;
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
             safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.GetComponent<CircleCollider2D>().radius;
+
+            var follow = _currentLevel.ball.transform;
+            virtualCam.transform.position = follow.position;
+            virtualCam.Follow = follow;
             
             _currentLevel.ball.Init(this);
 
@@ -80,7 +87,7 @@ namespace PolyRocket.Game
         {
             // close ui
             HidePop();
-            JumpToLevel(levelOne);
+            JumpToLevel(_levelPointer);
         }
 
         private void OnPlayerMoveStart()
@@ -138,6 +145,7 @@ namespace PolyRocket.Game
 
         private void OnClickGotoNext()
         {
+            HidePop();
             JumpToLevel(levelTwo);
         }
 
@@ -148,7 +156,7 @@ namespace PolyRocket.Game
 
         public void SetPhysicsPause(bool isPause)
         {
-            Time.fixedDeltaTime = isPause ? 0f : _defaultFixedDeltaTime;
+            Time.timeScale = isPause ? 0f : 1f;
         }
     }
 }

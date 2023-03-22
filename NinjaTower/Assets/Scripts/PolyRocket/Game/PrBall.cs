@@ -174,8 +174,7 @@ namespace PolyRocket
         private void SetControl(bool isControl)
         {
             _isControl = isControl;
-
-            // _launcher.SetPhysicsPause(isControl);
+            _launcher.SetPhysicsPause(isControl);
         }
     }
 }
