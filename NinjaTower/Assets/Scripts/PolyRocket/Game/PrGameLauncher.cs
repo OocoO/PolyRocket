@@ -18,6 +18,7 @@ namespace PolyRocket.Game
         public TMP_Text popBtnText;
         public Button popBtn;
 
+        public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
 
         public int maxShotForce;
@@ -26,6 +27,8 @@ namespace PolyRocket.Game
 
         private PrGameLevel _levelPointer;
         private PrGameLevel _currentLevel;
+
+        private bool _cameraFollow;
         
         public Camera mainCamera;
 
@@ -47,6 +50,8 @@ namespace PolyRocket.Game
         {
             Physics2D.gravity = Vector2.zero;
             mainCamera = Camera.main;
+
+            camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.ManualUpdate;
 
             levelOne.gameObject.SetActive(false);
             levelTwo.gameObject.SetActive(false);
@@ -77,7 +82,8 @@ namespace PolyRocket.Game
             var follow = _currentLevel.ball.transform;
             virtualCam.transform.position = follow.position;
             virtualCam.Follow = follow;
-            
+
+            SetCameraFollow(true);
             _currentLevel.ball.Init(this);
 
             _isGameStart = true;
@@ -157,6 +163,22 @@ namespace PolyRocket.Game
         public void SetPhysicsPause(bool isPause)
         {
             Time.timeScale = isPause ? 0f : 1f;
+        }
+
+        public void SetCameraFollow(bool isFollow)
+        {
+            if (!_cameraFollow && isFollow)
+            {
+                // var trans = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                // trans.ForceCameraPosition(_currentLevel.ball.transform.position, Quaternion.identity);
+            }
+
+            camBrain.enabled = isFollow;
+        }
+
+        public void SetCameraOffset(Vector2 worldPos)
+        {
+            
         }
     }
 }
