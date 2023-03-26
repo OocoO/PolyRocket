@@ -6,11 +6,11 @@ using UnityEngine.EventSystems;
 
 namespace PolyRocket.Game
 {
-    public class DragPanel : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerDownHandler
+    public class DragPanel : Empty4Raycaster, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerDownHandler
     {
         private PrGameLauncher _launcher;
 
-        private Vector2 _startPos;
+        private Vector2 _posLast;
         
         public void Init(PrGameLauncher launcher)
         {
@@ -18,28 +18,34 @@ namespace PolyRocket.Game
         }
 
 
-        public void OnDrag(PointerEventData eventData)
-        {
-            _launcher.SetCameraFollow(false);
-        }
-
         public void OnBeginDrag(PointerEventData eventData)
         {
-            var dMove = eventData.position - _startPos;
-            var scale = ScreenUtility.World2ScreenMatrix(_launcher.mainCamera).lossyScale;
-            var targetMove = dMove / scale;
+            _launcher.SetCameraFollow(false);
+            CancelInvoke(nameof(ResetCameraFollow));
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            var dMove = _posLast - eventData.position;
+            _posLast = eventData.position;
             
-            
+            _launcher.DragCamera(dMove);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _launcher.SetCameraFollow(true);
+            Invoke(nameof(ResetCameraFollow),1f);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _startPos = eventData.position;
+            _posLast = eventData.position;
+        }
+
+        private void ResetCameraFollow()
+        {
+            _launcher.SetCameraFollow(true);
+
         }
     }
 }

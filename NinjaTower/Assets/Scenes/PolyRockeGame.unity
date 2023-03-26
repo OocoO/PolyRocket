@@ -591,7 +591,7 @@ Transform:
   m_Children:
   - {fileID: 436629551}
   m_Father: {fileID: 518546492}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &365708279
 SpriteRenderer:
@@ -692,7 +692,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 96f3b3d4758c4a644964e777f8df237a, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -900,10 +900,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1760827133}
   - {fileID: 600525086}
   - {fileID: 2053891595}
   - {fileID: 365708278}
-  - {fileID: 1760827133}
   m_Father: {fileID: 1265235678}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -922,6 +922,37 @@ MonoBehaviour:
   version: 0
   ball: {fileID: 365708280}
   maxStepCount: 4
+--- !u!1 &591756403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 591756404}
+  m_Layer: 13
+  m_Name: CameraTaget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &591756404
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 591756403}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1265235678}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &600525085
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,7 +963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 600525086}
   - component: {fileID: 600525087}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: RoomBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -952,7 +983,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 518546492}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!60 &600525087
 PolygonCollider2D:
@@ -1125,7 +1156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 797612688}
   - component: {fileID: 797612690}
-  - component: {fileID: 797612691}
+  - component: {fileID: 797612692}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -1161,7 +1192,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797612687}
   m_CullTransparentMesh: 1
---- !u!114 &797612691
+--- !u!114 &797612692
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1170,7 +1201,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 797612687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fbc95065b2796640976745390ad0ed9, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ef24bf4234120f4d8f44cbb7b7ffe1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -1687,6 +1718,7 @@ Transform:
   m_Children:
   - {fileID: 518546492}
   - {fileID: 1586113762}
+  - {fileID: 591756404}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1710,6 +1742,8 @@ MonoBehaviour:
   popBtn: {fileID: 897617052}
   camBrain: {fileID: 325686375}
   virtualCam: {fileID: 734764688}
+  camDragPanel: {fileID: 797612692}
+  camTarget: {fileID: 591756404}
   maxShotForce: 1000
   speedDecrease: 0.4
   safeZoom: 0
@@ -5544,17 +5578,17 @@ MonoBehaviour:
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
-  m_TargetMovementOnly: 1
+  m_TargetMovementOnly: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_CameraDistance: 10
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
-  m_UnlimitedSoftZone: 0
+  m_UnlimitedSoftZone: 1
   m_SoftZoneWidth: 0.68
   m_SoftZoneHeight: 0.43
-  m_BiasX: 0.00000043826944
+  m_BiasX: 0.00000035061555
   m_BiasY: 0
   m_CenterOnActivate: 1
   m_GroupFramingMode: 2
@@ -5656,13 +5690,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1760827132}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 9.79, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 518546492}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &1760827134
 CircleCollider2D:
@@ -5987,7 +6021,7 @@ Transform:
   m_Children:
   - {fileID: 1377080189}
   m_Father: {fileID: 518546492}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &2053891596
 Grid:

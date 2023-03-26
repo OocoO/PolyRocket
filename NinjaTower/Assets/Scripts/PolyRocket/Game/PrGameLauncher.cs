@@ -20,6 +20,8 @@ namespace PolyRocket.Game
 
         public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
+        public DragPanel camDragPanel;
+        public Transform camTarget;
 
         public int maxShotForce;
         public float speedDecrease;
@@ -38,6 +40,7 @@ namespace PolyRocket.Game
         
         private bool _isGameStart;
         private int _moveStepRemain;
+        private CinemachineFramingTransposer _framingTransposer;
 
         public bool PlayerMoveLock => _moveStepRemain <= 0;
 
@@ -51,7 +54,10 @@ namespace PolyRocket.Game
             Physics2D.gravity = Vector2.zero;
             mainCamera = Camera.main;
 
-            camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.ManualUpdate;
+            camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.LateUpdate;
+            _framingTransposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            virtualCam.Follow = camTarget;
+            camDragPanel.Init(this);
 
             levelOne.gameObject.SetActive(false);
             levelTwo.gameObject.SetActive(false);
@@ -78,15 +84,23 @@ namespace PolyRocket.Game
             _moveStepRemain = _currentLevel.maxStepCount;
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
             safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.GetComponent<CircleCollider2D>().radius;
-
-            var follow = _currentLevel.ball.transform;
-            virtualCam.transform.position = follow.position;
-            virtualCam.Follow = follow;
-
-            SetCameraFollow(true);
+            
             _currentLevel.ball.Init(this);
 
             _isGameStart = true;
+        }
+
+        private void Update()
+        {
+            UpdateCameraFollow();
+        }
+
+        private void UpdateCameraFollow()
+        {
+            if (_cameraFollow)
+            {
+                camTarget.position = _currentLevel.ball.transform.position;
+            }
         }
 
         private void OnClickRestart()
@@ -167,18 +181,29 @@ namespace PolyRocket.Game
 
         public void SetCameraFollow(bool isFollow)
         {
-            if (!_cameraFollow && isFollow)
+            _cameraFollow = isFollow;
+            if (isFollow)
             {
-                // var trans = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
-                // trans.ForceCameraPosition(_currentLevel.ball.transform.position, Quaternion.identity);
+                UpdateCameraFollow();
             }
-
-            camBrain.enabled = isFollow;
         }
 
-        public void SetCameraOffset(Vector2 worldPos)
+        public void DragCamera(Vector2 screenMove)
         {
+            if (_cameraFollow)
+            {
+                throw new Exception("Set Camera Follow to false");
+            }
+
+            var offset = screenMove;
+            offset *= ScreenUtility.World2ScreenMatrix(mainCamera).inverse.lossyScale;
+
+            var camPos = camTarget.position;
+
+            camPos.x += offset.x;
+            camPos.y += offset.y;
             
+            camTarget.position = camPos;
         }
     }
 }
