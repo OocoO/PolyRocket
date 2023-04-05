@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Carotaa.Code;
 using Cinemachine;
 using TMPro;
@@ -10,9 +11,6 @@ namespace PolyRocket.Game
 {
     public class PrGameLauncher : MonoBehaviour
     {
-        public PrGameLevel levelOne;
-        public PrGameLevel levelTwo;
-
         public GameObject uiPop;
         public TMP_Text popTitle;
         public TMP_Text popBtnText;
@@ -27,8 +25,10 @@ namespace PolyRocket.Game
         public float speedDecrease;
         public float safeZoom; // the size of the ball: screen coord
 
-        private PrGameLevel _levelPointer;
+        private List<PrGameLevelInfo> _levels;
+        private PrGameLevelInfo _currentLevelInfo;
         private PrGameLevel _currentLevel;
+        private int _currentIndex;
 
         private bool _cameraFollow;
         
@@ -59,38 +59,42 @@ namespace PolyRocket.Game
             virtualCam.Follow = camTarget;
             camDragPanel.Init(this);
 
-            levelOne.gameObject.SetActive(false);
-            levelTwo.gameObject.SetActive(false);
-
             EPlayerMoveStart.Subscribe(OnPlayerMoveStart);
             EPlayerMoveEnd.Subscribe(OnPlayerMoveEnd);
             EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
 
             HidePop();
-            
-            JumpToLevel(levelOne);
+
+            _levels = PrGameLevelInfo.GetAll();
+            _currentIndex = 0;
+            JumpToLevel(_levels[_currentIndex]);
         }
 
-        public void JumpToLevel(PrGameLevel level)
+        public void JumpToLevel(PrGameLevelInfo levelInfo)
         {
             if (_currentLevel) Destroy(_currentLevel.gameObject);
 
-            _levelPointer = level;
+            _currentLevelInfo = levelInfo;
+            var level = levelInfo.GetLevel();
             var go = Instantiate(level.gameObject, transform);
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
             
             // data init
-            _moveStepRemain = _currentLevel.maxStepCount;
+            // _moveStepRemain = _currentLevel.maxStepCount;
+            _moveStepRemain = int.MaxValue;
+
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
             safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.GetComponent<CircleCollider2D>().radius;
             
             _currentLevel.ball.Init(this);
+            camDragPanel.enabled = true;
+            SetCameraFollow(true);
 
             _isGameStart = true;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             UpdateCameraFollow();
         }
@@ -107,7 +111,7 @@ namespace PolyRocket.Game
         {
             // close ui
             HidePop();
-            JumpToLevel(_levelPointer);
+            JumpToLevel(_currentLevelInfo);
         }
 
         private void OnPlayerMoveStart()
@@ -116,7 +120,9 @@ namespace PolyRocket.Game
             {
                 throw new Exception("Invalid Move");
             }
-            
+
+            // Temp: Enable camera drag before player move
+            camDragPanel.enabled = false;
             _moveStepRemain--;
         }
 
@@ -166,7 +172,10 @@ namespace PolyRocket.Game
         private void OnClickGotoNext()
         {
             HidePop();
-            JumpToLevel(levelTwo);
+
+            _currentIndex++;
+            _currentIndex = Mathf.Min(_currentIndex, _levels.Count - 1);
+            JumpToLevel(_levels[_currentIndex]);
         }
 
         private void HidePop()

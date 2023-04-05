@@ -28,6 +28,8 @@ namespace PolyRocket
         {
             _launcher = launcher;
             _isMoving = false;
+
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             SetAimVisible(false);
         }
 
