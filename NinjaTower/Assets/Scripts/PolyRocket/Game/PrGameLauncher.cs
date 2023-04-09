@@ -18,12 +18,12 @@ namespace PolyRocket.Game
 
         public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
-        public DragPanel camDragPanel;
+        public EmptyTouchPanel camDragPanel;
         public Transform camTarget;
 
         public int maxShotForce;
         public float speedDecrease;
-        public float safeZoom; // the size of the ball: screen coord
+        public float ballScreenRadius; // the size of the ball: screen coord
 
         private List<PrGameLevelInfo> _levels;
         private PrGameLevelInfo _currentLevelInfo;
@@ -38,11 +38,12 @@ namespace PolyRocket.Game
         public ShareEvent EPlayerMoveToTarget = ShareEvent.BuildEvent(nameof(EPlayerMoveToTarget));
         
         private bool _isGameStart;
-        private int _moveStepRemain;
+        private bool _enableCameraDrag;
         private CinemachineFramingTransposer _framingTransposer;
 
-        public bool PlayerMoveLock => _moveStepRemain <= 0;
+        private Vector2 _posLast;
 
+        
         private void Awake()
         {
             Init();
@@ -58,7 +59,6 @@ namespace PolyRocket.Game
             virtualCam.Follow = camTarget;
             camDragPanel.Init(this);
 
-            EPlayerMoveStart.Subscribe(OnPlayerMoveStart);
             EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
 
             HidePop();
@@ -78,12 +78,11 @@ namespace PolyRocket.Game
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
             
-            // data init
-            // _moveStepRemain = _currentLevel.maxStepCount;
-            _moveStepRemain = int.MaxValue;
-
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
-            safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
+            ballScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
+
+            // temp disable camera drag
+            // _enableCameraDrag = true;
             
             _currentLevel.ball.Init(this);
             camDragPanel.enabled = true;
@@ -110,18 +109,6 @@ namespace PolyRocket.Game
             // close ui
             HidePop();
             JumpToLevel(_currentLevelInfo);
-        }
-
-        private void OnPlayerMoveStart()
-        {
-            if (_moveStepRemain <= 0)
-            {
-                throw new Exception("Invalid Move");
-            }
-
-            // Temp: Enable camera drag before player move
-            camDragPanel.enabled = false;
-            _moveStepRemain--;
         }
 
         public void OnPlayerTriggerTrap()
@@ -154,6 +141,7 @@ namespace PolyRocket.Game
             onClick.AddListener(OnClickRestart);
             popBtn.onClick = onClick;
             
+            SetPhysicsPause(true);
             uiPop.SetActive(true);
         }
 
@@ -166,6 +154,7 @@ namespace PolyRocket.Game
             onClick.AddListener(OnClickGotoNext);
             popBtn.onClick = onClick;
             
+            SetPhysicsPause(true);
             uiPop.SetActive(true);
         }
 
@@ -180,15 +169,16 @@ namespace PolyRocket.Game
 
         private void HidePop()
         {
+            SetPhysicsPause(false);
             uiPop.SetActive(false);
         }
 
-        public void SetPhysicsPause(bool isPause)
+        private void SetPhysicsPause(bool isPause)
         {
             Time.timeScale = isPause ? 0f : 1f;
         }
 
-        public void SetCameraFollow(bool isFollow)
+        private void SetCameraFollow(bool isFollow)
         {
             _cameraFollow = isFollow;
             if (isFollow)
@@ -197,7 +187,7 @@ namespace PolyRocket.Game
             }
         }
 
-        public void DragCamera(Vector2 screenMove)
+        private void DragCamera(Vector2 screenMove)
         {
             if (_cameraFollow)
             {
@@ -213,6 +203,52 @@ namespace PolyRocket.Game
             camPos.y += offset.y;
             
             camTarget.position = camPos;
+        }
+
+        private void BlowWind(PointerEventData eventData)
+        {
+            _enableCameraDrag = false;
+            
+            _currentLevel.ball.OnWindBlow(eventData);
+        }
+        
+        
+        // Camera drag
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            _posLast = eventData.position;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            BlowWind(eventData);
+        }
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (!_enableCameraDrag) return;
+            
+            SetCameraFollow(false);
+            CancelInvoke(nameof(ResetCameraFollow));
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (!_enableCameraDrag) return;
+            
+            var dMove = _posLast - eventData.position;
+            _posLast = eventData.position;
+            
+            DragCamera(dMove);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            Invoke(nameof(ResetCameraFollow),1f);
+        }
+        
+        private void ResetCameraFollow()
+        {
+            SetCameraFollow(true);
         }
     }
 }

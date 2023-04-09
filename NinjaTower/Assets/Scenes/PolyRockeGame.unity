@@ -213,7 +213,6 @@ GameObject:
   - component: {fileID: 325686371}
   - component: {fileID: 325686370}
   - component: {fileID: 325686373}
-  - component: {fileID: 325686374}
   - component: {fileID: 325686375}
   m_Layer: 0
   m_Name: Main Camera
@@ -322,22 +321,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &325686374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325686369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  m_MaxRayIntersections: 0
 --- !u!114 &325686375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1094,8 +1077,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad577e277117daa40b3da6357c1e10a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelOne: {fileID: 985337945859081856, guid: 298dbcaf32c27ad4782d33926708f4fe, type: 3}
-  levelTwo: {fileID: 5637602267571094207, guid: da654e7467f6ecb4db982499141ff4ac, type: 3}
   uiPop: {fileID: 316131856}
   popTitle: {fileID: 1157360197}
   popBtnText: {fileID: 1899119978}
@@ -1106,7 +1087,7 @@ MonoBehaviour:
   camTarget: {fileID: 591756404}
   maxShotForce: 1000
   speedDecrease: 0.4
-  safeZoom: 0
+  ballScreenRadius: 0
   mainCamera: {fileID: 325686371}
 --- !u!210 &1265235680
 SortingGroup:
