@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NinjaTower.Battle
 {
-	public class Path : MonoBehaviour
+	public class NtPath : MonoBehaviour
 	{
 		public Transform m_StartPos;
 		public Transform m_EndPos;

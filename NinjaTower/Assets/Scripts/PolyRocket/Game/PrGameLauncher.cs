@@ -35,7 +35,6 @@ namespace PolyRocket.Game
         public Camera mainCamera;
 
         public ShareEvent EPlayerMoveStart = ShareEvent.BuildEvent(nameof(EPlayerMoveStart));
-        public ShareEvent EPlayerMoveEnd = ShareEvent.BuildEvent(nameof(EPlayerMoveEnd));
         public ShareEvent EPlayerMoveToTarget = ShareEvent.BuildEvent(nameof(EPlayerMoveToTarget));
         
         private bool _isGameStart;
@@ -60,7 +59,6 @@ namespace PolyRocket.Game
             camDragPanel.Init(this);
 
             EPlayerMoveStart.Subscribe(OnPlayerMoveStart);
-            EPlayerMoveEnd.Subscribe(OnPlayerMoveEnd);
             EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
 
             HidePop();
@@ -85,7 +83,7 @@ namespace PolyRocket.Game
             _moveStepRemain = int.MaxValue;
 
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
-            safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.GetComponent<CircleCollider2D>().radius;
+            safeZoom = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
             
             _currentLevel.ball.Init(this);
             camDragPanel.enabled = true;
@@ -103,7 +101,7 @@ namespace PolyRocket.Game
         {
             if (_cameraFollow)
             {
-                camTarget.position = _currentLevel.ball.transform.position;
+                camTarget.position = _currentLevel.ball.rb.position;
             }
         }
 
@@ -126,14 +124,9 @@ namespace PolyRocket.Game
             _moveStepRemain--;
         }
 
-        private void OnPlayerMoveEnd()
+        public void OnPlayerTriggerTrap()
         {
-            if (_isGameStart && _moveStepRemain <= 0)
-            {
-                // game over: failed
-                _isGameStart = false;
-                ShowGameOver();
-            }
+            LevelFailed();
         }
 
         private void OnPlayerMoveToTarget()
@@ -143,6 +136,13 @@ namespace PolyRocket.Game
                 _isGameStart = false;
                 ShowGameSuccess();
             }
+        }
+
+        private void LevelFailed()
+        {
+            // game over: failed
+            _isGameStart = false;
+            ShowGameOver();
         }
 
         private void ShowGameOver()

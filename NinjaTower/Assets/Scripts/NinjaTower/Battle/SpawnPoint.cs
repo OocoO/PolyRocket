@@ -7,7 +7,7 @@ namespace NinjaTower.Battle.Battle
 	public class SpawnPoint : MonoBehaviour
 	{
 		public EnvManager m_Manager;
-		public Path m_Path;
+		public NtPath m_Path;
 		public int m_Count;
 		public int m_Interval;
 

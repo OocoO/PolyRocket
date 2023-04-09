@@ -27,7 +27,7 @@ namespace NinjaTower.Battle
 			_enemies = new List<Enemy>();
 		}
 
-		public Enemy CreateEnemy (Path path, EnemyType type)
+		public Enemy CreateEnemy (NtPath path, EnemyType type)
 		{
 			var go = Instantiate(m_Enemy, transform);
 			var enemy = go.GetComponent<Enemy>();

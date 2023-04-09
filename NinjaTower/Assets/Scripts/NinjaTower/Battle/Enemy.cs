@@ -9,7 +9,7 @@ namespace NinjaTower.Battle
 	{
 		public float m_Speed;
 
-		public Path m_Path;
+		public NtPath m_Path;
 
 		public EnemyType Type;
 
@@ -18,7 +18,7 @@ namespace NinjaTower.Battle
 
 		public float Distance => _position;
 
-		public void Init(Path path, EnemyType type)
+		public void Init(NtPath path, EnemyType type)
 		{
 			m_Path = path;
 			Type = type;

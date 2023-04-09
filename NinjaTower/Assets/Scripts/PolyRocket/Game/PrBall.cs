@@ -14,7 +14,9 @@ namespace PolyRocket
         IDragHandler
     {
         public Rigidbody2D rb;
-        public Collider2D col;
+        public CircleCollider2D col;
+        public PrBallPhysics ballPhysics;
+        public Transform ballTouchZoom;
 
         public Transform aimOrigin;
         public Transform aimLength;
@@ -28,6 +30,7 @@ namespace PolyRocket
         {
             _launcher = launcher;
             _isMoving = false;
+            ballPhysics.Init(this);
 
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             SetAimVisible(false);
@@ -41,6 +44,7 @@ namespace PolyRocket
 
         private void Update()
         {
+            UpdateTouchZoom();
             CheckIsSuccess();
             CheckIsFailed();
         }
@@ -68,12 +72,11 @@ namespace PolyRocket
 
         private void StopMove()
         {
-            rb.velocity = Vector2.zero;
+            ResetSpeed();
             // trigger event
             _isMoving = false;
             _isSuccess = false;
             CancelInvoke(nameof(StartCheckSpeed));
-            _launcher.EPlayerMoveEnd.Raise();
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -126,6 +129,7 @@ namespace PolyRocket
 
             _launcher.EPlayerMoveStart.Raise();
             Invoke(nameof(StartCheckSpeed), 1f); // start check if ball stops moving
+            ResetSpeed();
             rb.AddForce(direct.normalized * _launcher.maxShotForce * scale, ForceMode2D.Force);
             
             SetAimVisible(false);
@@ -139,7 +143,7 @@ namespace PolyRocket
         private Vector2 GetAimDirect(PointerEventData eventData)
         {
             var pos = eventData.position;
-            var startPos = (Vector2) _launcher.mainCamera.WorldToScreenPoint(transform.position);
+            var startPos = (Vector2) _launcher.mainCamera.WorldToScreenPoint(rb.position);
             var direct = startPos - pos;
             return direct;
         }
@@ -164,12 +168,24 @@ namespace PolyRocket
 
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void ResetSpeed()
         {
-            if (other.gameObject.CompareTag("Flag"))
+            rb.velocity = Vector2.zero;
+        }
+
+        public void OnPhysicsTrigger(Collider2D other)
+        {
+            var otherGo = other.gameObject;
+            if (otherGo.CompareTag("Flag"))
             {
                 // mark game over
                 _isSuccess = true;
+            }
+            else if (IsTrapTag(otherGo))
+            {
+                // stop move
+                StopMove();
+                _launcher.OnPlayerTriggerTrap();
             }
         }
 
@@ -177,6 +193,16 @@ namespace PolyRocket
         {
             _isControl = isControl;
             _launcher.SetPhysicsPause(isControl);
+        }
+
+        private void UpdateTouchZoom()
+        {
+            ballTouchZoom.position = ballPhysics.transform.position;
+        }
+
+        private static bool IsTrapTag(GameObject go)
+        {
+            return go.CompareTag("StaticTrap") || go.CompareTag("DynamicTrap");
         }
     }
 }
