@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e98bf9df04324f32862c0a44b0aca7f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 287083410173307752}
   col: {fileID: 5931788645156406678}
   ballPhysics: {fileID: 7993447564517513834}
 --- !u!1 &6319431280466840382
@@ -184,4 +183,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8090dde31e24393419662808a5c42ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  physicsCollider: {fileID: 0}
+  rb: {fileID: 287083410173307752}
+  physicsCollider: {fileID: 5931788645156406678}

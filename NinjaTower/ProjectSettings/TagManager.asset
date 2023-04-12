@@ -9,6 +9,7 @@ TagManager:
   - Flag
   - StaticTrap
   - DynamicTrap
+  - ForceField
   layers:
   - Default
   - TransparentFX

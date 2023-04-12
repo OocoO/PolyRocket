@@ -100,7 +100,7 @@ namespace PolyRocket.Game
         {
             if (_cameraFollow)
             {
-                camTarget.position = _currentLevel.ball.rb.position;
+                camTarget.position = _currentLevel.ball.ballPhysics.Position;
             }
         }
 

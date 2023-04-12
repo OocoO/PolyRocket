@@ -8,7 +8,6 @@ namespace PolyRocket
 {
     public class PrBall : MonoBehaviour
     {
-        public Rigidbody2D rb;
         public CircleCollider2D col;
         public PrBallPhysics ballPhysics;
         
@@ -19,15 +18,7 @@ namespace PolyRocket
         public void Init(PrGameLauncher launcher)
         {
             _launcher = launcher;
-            ballPhysics.Init(this);
-
-            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-        }
-
-        private void FixedUpdate()
-        {
-            var velocity = rb.velocity;
-            rb.AddForce(-velocity * _launcher.speedDecrease, ForceMode2D.Force);
+            ballPhysics.Init(this, launcher);
         }
 
         private void Update()
@@ -59,13 +50,13 @@ namespace PolyRocket
             var direct = GetAimDirect(eventData);
 
             _launcher.EPlayerMoveStart.Raise();
-            rb.AddForce(direct.normalized * _launcher.maxShotForce * scale, ForceMode2D.Force);
+            ballPhysics.rb.AddForce(direct.normalized * _launcher.maxShotForce * scale, ForceMode2D.Force);
         }
 
         private Vector2 GetAimDirect(PointerEventData eventData)
         {
             var pos = eventData.position;
-            var startPos = (Vector2) _launcher.mainCamera.WorldToScreenPoint(rb.position);
+            var startPos = (Vector2) _launcher.mainCamera.WorldToScreenPoint(ballPhysics.transform.position);
             var direct = startPos - pos;
             return direct;
         }
@@ -85,7 +76,7 @@ namespace PolyRocket
 
         private void ResetSpeed()
         {
-            rb.velocity = Vector2.zero;
+            ballPhysics.rb.velocity = Vector2.zero;
         }
 
         public void OnPhysicsTrigger(Collider2D other)
@@ -98,8 +89,6 @@ namespace PolyRocket
             }
             else if (IsTrapTag(otherGo))
             {
-                // stop move
-                StopMove();
                 _launcher.OnPlayerTriggerTrap();
             }
         }
