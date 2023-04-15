@@ -10,7 +10,7 @@ namespace PolyRocket.Game
 
         public PrBall ball;
 
-        public int maxStepCount;
+        public CameraConfinerCreator camConfine;
     }
 
     public class PrGameLevelInfo

@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 985337945672641443}
   - component: {fileID: 985337945672641442}
+  - component: {fileID: 8336021382534313202}
+  - component: {fileID: 5743797821870738804}
   m_Layer: 14
-  m_Name: RoomBg
+  m_Name: CamConfier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,8 +26,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985337945672641440}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.06241131, y: 2.2434235, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57,10 +59,84 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 4.9437995, y: 12.490996}
-      - {x: -5.0040803, y: 12.468092}
-      - {x: -4.997119, y: -8.603295}
-      - {x: 4.9080424, y: -8.603297}
+    - - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+--- !u!114 &8336021382534313202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985337945672641440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e5ac92bc18f545cc84cd886ece82b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  editorData:
+    _bezierPath:
+      points:
+      - {x: -10.135557, y: -15.490866, z: 0}
+      - {x: -8.936811, y: -16.751106, z: 0}
+      - {x: 8.366297, y: -17.354746, z: 0}
+      - {x: 9.618402, y: -16.147507, z: 0}
+      - {x: 11.750322, y: -14.091975, z: 0}
+      - {x: 11.839199, y: 15.428714, z: 0}
+      - {x: 9.727842, y: 17.505362, z: 0}
+      - {x: 8.515726, y: 18.697552, z: 0}
+      - {x: -8.387997, y: 18.326347, z: 0}
+      - {x: -9.588356, y: 17.12232, z: 0}
+      - {x: -11.614912, y: 15.089573, z: 0}
+      - {x: -12.113834, y: -13.411104, z: 0}
+      isClosed: 1
+      space: 1
+      controlMode: 3
+      autoControlLength: 0.088
+      boundsUpToDate: 0
+      bounds:
+        m_Center: {x: 0.06241131, y: 2.2434235, z: 0}
+        m_Extent: {x: 2.2754579, y: 0.25819892, z: 0}
+      perAnchorNormalsAngle:
+      - 0
+      - 0
+      - 0
+      - 0
+      globalNormalsAngle: 0
+      flipNormals: 0
+    vertexPathUpToDate: 0
+    vertexPathMaxAngleError: 0.3
+    vertexPathMinVertexSpacing: 0.01
+    showTransformTool: 0
+    showPathBounds: 0
+    showPerSegmentBounds: 0
+    displayAnchorPoints: 1
+    displayControlPoints: 1
+    bezierHandleScale: 1
+    globalDisplaySettingsFoldout: 0
+    keepConstantHandleSize: 0
+    showNormalsInVertexMode: 0
+    showBezierPathInVertexMode: 0
+    showDisplayOptions: 1
+    showPathOptions: 1
+    showVertexPathDisplayOptions: 0
+    showVertexPathOptions: 1
+    showNormals: 0
+    showNormalsHelpInfo: 0
+    tabIndex: 0
+  initialized: 1
+--- !u!114 &5743797821870738804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985337945672641440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 694b254608e44d6ba738ca418d577c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &985337945859081862
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,7 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 0
   ball: {fileID: 6672609757726082006}
-  maxStepCount: 4
+  camConfine: {fileID: 5743797821870738804}
 --- !u!1 &985337946320618679
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985337946994913729}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

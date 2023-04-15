@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using PathCreation;
 using PathCreation.Utility;
 using UnityEditor;
@@ -271,7 +272,10 @@ namespace PathCreationEditor {
 
         #region Scene GUI
 
-        void OnSceneGUI () {
+        void OnSceneGUI ()
+        {
+            if (!creator) return;
+            
             if (!globalDisplaySettings.visibleBehindObjects) {
                 Handles.zTest = UnityEngine.Rendering.CompareFunction.LessEqual;
             }
@@ -614,6 +618,13 @@ namespace PathCreationEditor {
             UpdateGlobalDisplaySettings ();
             ResetState ();
             SetTransformState (true);
+            
+            // force dirty SceneView.s_ActiveEditors
+            // maybe this is a unity bug
+            var method =
+                typeof(SceneView).GetMethod("SetActiveEditorsDirty", BindingFlags.NonPublic | BindingFlags.Static);
+            // ReSharper disable once PossibleNullReferenceException
+            method.Invoke(null, new object[]{true});
         }
 
         void SetTransformState (bool initialize = false) {

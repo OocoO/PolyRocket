@@ -18,6 +18,7 @@ namespace PolyRocket.Game
 
         public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
+        public CinemachineConfiner2D camConfiner;
         public EmptyTouchPanel camDragPanel;
         public Transform camTarget;
 
@@ -80,6 +81,9 @@ namespace PolyRocket.Game
             
             var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
             ballScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
+
+            camConfiner.m_BoundingShape2D = _currentLevel.camConfine.PolygonCollider;
+            camConfiner.InvalidateCache();
 
             // temp disable camera drag
             // _enableCameraDrag = true;

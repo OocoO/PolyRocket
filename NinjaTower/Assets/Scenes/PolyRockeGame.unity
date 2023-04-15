@@ -1083,6 +1083,7 @@ MonoBehaviour:
   popBtn: {fileID: 897617052}
   camBrain: {fileID: 325686375}
   virtualCam: {fileID: 734764688}
+  camConfiner: {fileID: 734764689}
   camDragPanel: {fileID: 797612692}
   camTarget: {fileID: 591756404}
   maxShotForce: 1000
