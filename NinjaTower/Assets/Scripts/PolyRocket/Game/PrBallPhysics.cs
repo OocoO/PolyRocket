@@ -11,47 +11,43 @@ namespace PolyRocket.Game
         public Rigidbody2D rb;
         
         private PrBall _ball;
-        private PrGameLauncher _launcher;
 
-        private List<PrForceField> _fields;
+        public List<PrForceField> Fields { get; set; }
+        private PrGlobal _global;
 
         public Vector2 Position => rb.position;
 
-        public void Init(PrBall ball, PrGameLauncher launcher)
+        public void Init(PrBall ball, PrGlobal global)
         {
             _ball = ball;
-            _launcher = launcher;
-            _fields = new List<PrForceField>();
-            
-            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            _global = global;
+            Fields = new List<PrForceField>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("ForceField"))
             {
-                _fields.Add(other.GetComponent<PrForceField>());
+                Fields.Add(other.GetComponent<PrForceField>());
             }
+            
             _ball.OnPhysicsTrigger(other);
+            _ball.StateMachine.Driver.OnPhysicsTriggerEnter.Invoke(other);
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag("ForceField"))
             {
-                _fields.Remove(other.GetComponent<PrForceField>());
+                Fields.Remove(other.GetComponent<PrForceField>());
             }
+            
+            _ball.StateMachine.Driver.OnPhysicsTriggerExit.Invoke(other);
         }
 
         private void FixedUpdate()
         {
-            var velocity = rb.velocity;
-            rb.AddForce(-velocity * _launcher.speedDecrease, ForceMode2D.Force);
-
-            foreach (var field in _fields)
-            {
-                field.ApplyForce(rb);
-            }
+            _ball.StateMachine.Driver.OnFixedUpdate.Invoke();
         }
     }
 }

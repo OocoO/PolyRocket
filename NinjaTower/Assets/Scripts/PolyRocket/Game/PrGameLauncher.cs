@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace PolyRocket.Game
 {
+    // dependency: PrGlobal <- GameScripts <- Launcher
     public class PrGameLauncher : MonoBehaviour
     {
         public GameObject uiPop;
@@ -21,11 +22,7 @@ namespace PolyRocket.Game
         public CinemachineConfiner2D camConfiner;
         public EmptyTouchPanel camDragPanel;
         public Transform camTarget;
-
-        public int maxShotForce;
-        public float speedDecrease;
-        public float ballScreenRadius; // the size of the ball: screen coord
-
+        
         private List<PrGameLevelInfo> _levels;
         private PrGameLevelInfo _currentLevelInfo;
         private PrGameLevel _currentLevel;
@@ -33,9 +30,6 @@ namespace PolyRocket.Game
 
         private bool _cameraFollow;
         
-        public Camera mainCamera;
-
-        public ShareEvent EPlayerMoveStart = ShareEvent.BuildEvent(nameof(EPlayerMoveStart));
         public ShareEvent EPlayerMoveToTarget = ShareEvent.BuildEvent(nameof(EPlayerMoveToTarget));
         
         private bool _isGameStart;
@@ -43,6 +37,7 @@ namespace PolyRocket.Game
         private CinemachineFramingTransposer _framingTransposer;
 
         private Vector2 _posLast;
+        private PrGlobal _global;
 
         
         private void Awake()
@@ -53,12 +48,16 @@ namespace PolyRocket.Game
         private void Init()
         {
             Physics2D.gravity = Vector2.zero;
-            mainCamera = Camera.main;
 
             camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.LateUpdate;
             _framingTransposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
             virtualCam.Follow = camTarget;
             camDragPanel.Init(this);
+
+            _global = new PrGlobal();
+            _global.mainCamera = Camera.main;
+            _global.EPlayerTriggerTrap += OnPlayerTriggerTrap;
+            _global.EPlayerMoveToTarget += OnPlayerMoveToTarget;
 
             EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
 
@@ -79,8 +78,8 @@ namespace PolyRocket.Game
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
             
-            var worldToScreenMat = ScreenUtility.World2ScreenMatrix(mainCamera);
-            ballScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
+            var worldToScreenMat = ScreenUtility.World2ScreenMatrix(_global.mainCamera);
+            _global.ballScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
 
             camConfiner.m_BoundingShape2D = _currentLevel.camConfine.PolygonCollider;
             camConfiner.InvalidateCache();
@@ -88,7 +87,7 @@ namespace PolyRocket.Game
             // temp disable camera drag
             // _enableCameraDrag = true;
             
-            _currentLevel.ball.Init(this);
+            _currentLevel.ball.Init(_global);
             camDragPanel.enabled = true;
             SetCameraFollow(true);
 
@@ -115,7 +114,7 @@ namespace PolyRocket.Game
             JumpToLevel(_currentLevelInfo);
         }
 
-        public void OnPlayerTriggerTrap()
+        private void OnPlayerTriggerTrap()
         {
             LevelFailed();
         }
@@ -199,7 +198,7 @@ namespace PolyRocket.Game
             }
 
             var offset = screenMove;
-            offset *= ScreenUtility.World2ScreenMatrix(mainCamera).inverse.lossyScale;
+            offset *= ScreenUtility.World2ScreenMatrix(_global.mainCamera).inverse.lossyScale;
 
             var camPos = camTarget.position;
 
@@ -209,14 +208,7 @@ namespace PolyRocket.Game
             camTarget.position = camPos;
         }
 
-        private void BlowWind(PointerEventData eventData)
-        {
-            _enableCameraDrag = false;
-            
-            _currentLevel.ball.OnWindBlow(eventData);
-        }
-        
-        
+
         // Camera drag
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -225,7 +217,9 @@ namespace PolyRocket.Game
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            BlowWind(eventData);
+            _enableCameraDrag = false;
+            
+            _currentLevel.ball.OnPointerClick(eventData);
         }
         public void OnBeginDrag(PointerEventData eventData)
         {
