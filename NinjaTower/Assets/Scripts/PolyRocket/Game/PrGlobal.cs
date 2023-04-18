@@ -8,7 +8,7 @@ namespace PolyRocket.Game
     {
         public float PlayerDashDistance = 8f;
         
-        public Action EPlayerMoveToTarget;
+        public Action<GameObject> EPlayerMoveTriggerFlag;
 
         public Action EPlayerTriggerTrap;
 

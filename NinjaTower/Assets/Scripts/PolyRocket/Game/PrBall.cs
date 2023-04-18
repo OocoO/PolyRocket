@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Carotaa.Code;
 using DG.Tweening;
 using MonsterLove.StateMachine;
 using UnityEngine;
@@ -63,8 +64,8 @@ namespace PolyRocket.Game
         public StateMachine<PrBallState, EventDiver> StateMachine;
 
         private LinkedList<DashInfo> _dashQueue;
+        private bool _isChainDash;
 
-        private bool _isSuccess;
         public void Init(PrGlobal global)
         {
             _global = global;
@@ -74,28 +75,6 @@ namespace PolyRocket.Game
 
             StateMachine = new StateMachine<PrBallState, EventDiver>(this);
             StateMachine.ChangeState(PrBallState.Idle);
-        }
-
-        private void Update()
-        {
-            CheckIsSuccess();
-        }
-
-        private void CheckIsSuccess()
-        {
-            if (_isSuccess)
-            {
-                _global.EPlayerMoveToTarget?.Invoke();
-                // stop move
-                StopMove();
-            }
-        }
-
-        private void StopMove()
-        {
-            ResetSpeed();
-            // trigger event
-            _isSuccess = false;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -136,7 +115,7 @@ namespace PolyRocket.Game
             if (otherGo.CompareTag("Flag"))
             {
                 // mark game over
-                _isSuccess = true;
+                _global.EPlayerMoveTriggerFlag?.Invoke(otherGo);
             }
             else if (IsTrapTag(otherGo))
             {
@@ -153,6 +132,8 @@ namespace PolyRocket.Game
         // reflection: State Machine
         public void Idle_OnPointerClick(PointerEventData eventData)
         {
+            EventTrack.Log("Idle Pointer Click");
+            
             var startPos = ballPhysics.Position;
             DoDash(eventData, startPos);
         }
@@ -167,6 +148,7 @@ namespace PolyRocket.Game
         
         public void DashStart_Enter()
         {
+            EventTrack.Log("DashStart_Enter");
             var infoNode = _dashQueue.First;
             var info = infoNode.Value;
             var direct = info.ClickPos - info.StartPos;
@@ -180,6 +162,7 @@ namespace PolyRocket.Game
         public IEnumerator Dash_Enter()
         {
             // do something animation stuff
+            EventTrack.Log("Dash_Enter");
             var info = _dashQueue.First.Value;
             info.Progress = 0.1f;
             var complete = false;
@@ -188,12 +171,14 @@ namespace PolyRocket.Game
             tweener.SetEase(Ease.Linear);
             tweener.OnComplete(() =>
             {
+                EventTrack.Log("Dash Complete Tween");
                 Dash_OnFixedUpdate();
                 complete = true;
             });
 
             yield return new WaitUntil(() => complete);
-            
+            EventTrack.Log("Dash_Enter_Complete");
+
             // force refresh
             var next = info.Reason == DashInfo.EndReason.Default ? PrBallState.DashChain : PrBallState.DashEnd;
             StateMachine.ChangeState(next);
@@ -205,6 +190,7 @@ namespace PolyRocket.Game
             var info = infoNode.Value;
 
             var pos = info.GetCurrentPos();
+            ballPhysics.rb.velocity = Vector2.zero;
             ballPhysics.rb.MovePosition(pos);
         }
 
@@ -217,24 +203,37 @@ namespace PolyRocket.Game
             }
         }
 
-        public IEnumerator DashChain_Enter()
+        public void DashChain_Enter()
         {
-            yield return new WaitForSeconds(0.2f);
+            _isChainDash = false;
             
+            CancelInvoke(nameof(StopChainDash));
+            Invoke(nameof(StopChainDash), 0.2f);
+        }
+
+        private void StopChainDash()
+        {
+            if (_isChainDash) return;
+            
+            EventTrack.Log("Dash Chain End");
             StateMachine.ChangeState(PrBallState.DashEnd);
         }
 
         public void DashChain_OnPointerClick(PointerEventData eventData)
         {
             // maybe condition check
-            var current = _dashQueue.First.Value;
-            DoDash(eventData, current.EndPos);
+            EventTrack.Log("Dash Chain Pointer Click");
+
+            _isChainDash = true;
+            DoDash(eventData, ballPhysics.Position);
         }
 
         public void DashEnd_Enter()
         {
             // do something anime
+            ballPhysics.rb.velocity = Vector2.zero;
             _dashQueue.Clear();
+            // todo add cd
 
             StateMachine.ChangeState(PrBallState.Idle);
         }
@@ -251,7 +250,7 @@ namespace PolyRocket.Game
             };
             _dashQueue.AddFirst(dashInfo);
                 
-            StateMachine.ChangeState(PrBallState.DashStart, StateTransition.Overwrite);
+            StateMachine.ChangeState(PrBallState.DashStart, StateTransition.Safe);
         }
     }
 }

@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace PolyRocket.Game
 {
@@ -29,8 +30,6 @@ namespace PolyRocket.Game
         private int _currentIndex;
 
         private bool _cameraFollow;
-        
-        public ShareEvent EPlayerMoveToTarget = ShareEvent.BuildEvent(nameof(EPlayerMoveToTarget));
         
         private bool _isGameStart;
         private bool _enableCameraDrag;
@@ -57,10 +56,8 @@ namespace PolyRocket.Game
             _global = new PrGlobal();
             _global.mainCamera = Camera.main;
             _global.EPlayerTriggerTrap += OnPlayerTriggerTrap;
-            _global.EPlayerMoveToTarget += OnPlayerMoveToTarget;
-
-            EPlayerMoveToTarget.Subscribe(OnPlayerMoveToTarget);
-
+            _global.EPlayerMoveTriggerFlag += OnPlayerTriggerFlag;
+            
             HidePop();
 
             _levels = PrGameLevelInfo.GetAll();
@@ -119,12 +116,18 @@ namespace PolyRocket.Game
             LevelFailed();
         }
 
-        private void OnPlayerMoveToTarget()
+        private void OnPlayerTriggerFlag(GameObject flag)
         {
             if (_isGameStart)
             {
-                _isGameStart = false;
-                ShowGameSuccess();
+                // do some effect
+                Destroy(flag);
+                _currentLevel.FlagCount--;
+                if (_currentLevel.FlagCount <= 0)
+                {
+                    _isGameStart = false;
+                    ShowGameSuccess();
+                }
             }
         }
 

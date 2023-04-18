@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -11,6 +12,15 @@ namespace PolyRocket.Game
         public PrBall ball;
 
         public CameraConfinerCreator camConfine;
+        
+        public int FlagCount { get; set; }
+
+        public void Awake()
+        {
+            // do something init
+            var flags = GetComponentsInChildren<PrFlag>();
+            FlagCount = flags.Length;
+        }
     }
 
     public class PrGameLevelInfo

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7117377075713675071}
   - component: {fileID: 1918868492333447475}
   - component: {fileID: 2202210758541805833}
+  - component: {fileID: -2343107179604673525}
   m_Layer: 13
   m_Name: Joe
   m_TagString: Flag
@@ -145,3 +146,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-2343107179604673525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918868492333447477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449c1503363a47fe844ab9117568f745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
