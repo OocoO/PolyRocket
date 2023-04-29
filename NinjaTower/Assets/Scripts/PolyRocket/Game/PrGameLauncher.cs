@@ -14,15 +14,7 @@ namespace PolyRocket.Game
     // dependency: PrGlobal <- GameScripts <- Launcher
     public class PrGameLauncher : MonoBehaviour
     {
-        // UI Pop
-        public GameObject uiPop;
-        public TMP_Text popTitle;
-        public TMP_Text popBtnText;
-        public Button popBtn;
-        
         // UIHud
-        public PrPlayerHud prHud;
-
         public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
         public CinemachineConfiner2D camConfiner;
@@ -64,7 +56,6 @@ namespace PolyRocket.Game
             _global.EPlayerMoveTriggerFlag += OnPlayerTriggerFlag;
             
             // InitUI
-            prHud.Init(_global);
             HidePop();
 
             _levels = PrGameLevelInfo.GetAll();
@@ -95,7 +86,6 @@ namespace PolyRocket.Game
             camDragPanel.enabled = true;
             SetCameraFollow(true);
             
-            prHud.SetVisible(true);
 
             _isGameStart = true;
         }
@@ -149,28 +139,16 @@ namespace PolyRocket.Game
 
         private void ShowGameOver()
         {
-            popTitle.text = "Game Over";
-            popBtnText.text = "Restart";
-
-            var onClick = new Button.ButtonClickedEvent();
-            onClick.AddListener(OnClickRestart);
-            popBtn.onClick = onClick;
+            PrUIPop.Show("Game Over", "Restart", OnClickRestart);
             
             SetPhysicsPause(true);
-            uiPop.SetActive(true);
         }
 
         private void ShowGameSuccess()
         {
-            popTitle.text = "Level Complete";
-            popBtnText.text = "Next";
-
-            var onClick = new Button.ButtonClickedEvent();
-            onClick.AddListener(OnClickGotoNext);
-            popBtn.onClick = onClick;
+            PrUIPop.Show("Level Complete", "Next", OnClickGotoNext);
             
             SetPhysicsPause(true);
-            uiPop.SetActive(true);
         }
 
         private void OnClickGotoNext()
@@ -185,8 +163,7 @@ namespace PolyRocket.Game
         private void HidePop()
         {
             SetPhysicsPause(false);
-            uiPop.SetActive(false);
-            prHud.SetVisible(false);
+            UIManager.Instance.Pop<PrUIPop>();
         }
 
         private void SetPhysicsPause(bool isPause)

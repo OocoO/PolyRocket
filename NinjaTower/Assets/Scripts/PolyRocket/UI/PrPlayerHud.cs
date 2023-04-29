@@ -1,27 +1,35 @@
 ﻿using System;
+using Carotaa.Code;
 using PolyRocket.Game;
 using TMPro;
 using UnityEngine;
 
 namespace PolyRocket.UI
 {
-    public class PrPlayerHud : UIPageBase
+    [PageAddress("UI/PrPlayerHud")]
+    public class PrPlayerHud : PageBase
     {
         public TMP_Text dashCount;
 
-        public override void Init(PrGlobal global)
+        private PrGlobal _global;
+
+        public override void OnPush(object[] pushParam)
         {
-            base.Init(global);
+            base.OnPush(pushParam);
+
+            _global = pushParam[0] as PrGlobal;
+            // ReSharper disable once PossibleNullReferenceException
+            OnDashCountChange(_global.VPlayerDashLevel.Value);
+            _global.VPlayerDashLevel.Subscribe(OnDashCountChange);
+        }
+
+        public override void OnPop(object[] popParam)
+        {
+            base.OnPop(popParam);
             
-            OnDashCountChange(global.VPlayerDashLevel.Value);
-            global.VPlayerDashLevel.Subscribe(OnDashCountChange);
+            _global.VPlayerDashLevel.UnSubscribe(OnDashCountChange);
         }
 
-
-        private void OnDestroy()
-        {
-            Global.VPlayerDashLevel.UnSubscribe(OnDashCountChange);
-        }
 
         private void OnDashCountChange(int level)
         {

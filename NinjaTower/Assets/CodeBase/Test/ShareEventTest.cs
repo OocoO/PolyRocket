@@ -17,15 +17,5 @@ namespace Carotaa.Code.Test
 
             e.Raise();
         }
-
-
-        [UnityTest]
-        public IEnumerator ShareEventTest2WithEnumeratorPasses()
-        {
-            // wait UI Manager init
-            while (!UIManager.Instance.IsReady) yield return null;
-
-            EventCenter.Raise("Carotaa");
-        }
     }
 }
