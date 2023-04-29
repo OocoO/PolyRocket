@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Carotaa.Code;
 using Cinemachine;
+using PolyRocket.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,10 +14,14 @@ namespace PolyRocket.Game
     // dependency: PrGlobal <- GameScripts <- Launcher
     public class PrGameLauncher : MonoBehaviour
     {
+        // UI Pop
         public GameObject uiPop;
         public TMP_Text popTitle;
         public TMP_Text popBtnText;
         public Button popBtn;
+        
+        // UIHud
+        public PrPlayerHud prHud;
 
         public CinemachineBrain camBrain;
         public CinemachineVirtualCamera virtualCam;
@@ -54,10 +59,12 @@ namespace PolyRocket.Game
             camDragPanel.Init(this);
 
             _global = new PrGlobal();
-            _global.mainCamera = Camera.main;
+            _global.MainCamera = Camera.main;
             _global.EPlayerTriggerTrap += OnPlayerTriggerTrap;
             _global.EPlayerMoveTriggerFlag += OnPlayerTriggerFlag;
             
+            // InitUI
+            prHud.Init(_global);
             HidePop();
 
             _levels = PrGameLevelInfo.GetAll();
@@ -75,8 +82,8 @@ namespace PolyRocket.Game
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
             
-            var worldToScreenMat = ScreenUtility.World2ScreenMatrix(_global.mainCamera);
-            _global.ballScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
+            var worldToScreenMat = ScreenUtility.World2ScreenMatrix(_global.MainCamera);
+            _global.BallScreenRadius = worldToScreenMat.lossyScale.x * _currentLevel.ball.col.radius;
 
             camConfiner.m_BoundingShape2D = _currentLevel.camConfine.PolygonCollider;
             camConfiner.InvalidateCache();
@@ -87,6 +94,8 @@ namespace PolyRocket.Game
             _currentLevel.ball.Init(_global);
             camDragPanel.enabled = true;
             SetCameraFollow(true);
+            
+            prHud.SetVisible(true);
 
             _isGameStart = true;
         }
@@ -116,12 +125,12 @@ namespace PolyRocket.Game
             LevelFailed();
         }
 
-        private void OnPlayerTriggerFlag(GameObject flag)
+        private void OnPlayerTriggerFlag(PrActorBase flag)
         {
             if (_isGameStart)
             {
                 // do some effect
-                Destroy(flag);
+                Destroy(flag.gameObject);
                 _currentLevel.FlagCount--;
                 if (_currentLevel.FlagCount <= 0)
                 {
@@ -177,6 +186,7 @@ namespace PolyRocket.Game
         {
             SetPhysicsPause(false);
             uiPop.SetActive(false);
+            prHud.SetVisible(false);
         }
 
         private void SetPhysicsPause(bool isPause)
@@ -201,7 +211,7 @@ namespace PolyRocket.Game
             }
 
             var offset = screenMove;
-            offset *= ScreenUtility.World2ScreenMatrix(_global.mainCamera).inverse.lossyScale;
+            offset *= ScreenUtility.World2ScreenMatrix(_global.MainCamera).inverse.lossyScale;
 
             var camPos = camTarget.position;
 

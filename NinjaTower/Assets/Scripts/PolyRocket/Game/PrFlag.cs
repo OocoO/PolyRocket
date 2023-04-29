@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PolyRocket.Game
 {
-    public class PrFlag: MonoBehaviour
+    public class PrFlag: PrTriggerBase
     {
     }
 }

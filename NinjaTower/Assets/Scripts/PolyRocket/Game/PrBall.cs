@@ -48,13 +48,17 @@ namespace PolyRocket.Game
         }
     }
     
-    public class PrBall : MonoBehaviour
+    public class PrBall : PrActorBase
     {
         public class EventDiver
         {
             public StateEvent<PointerEventData> OnPointerClick;
             public StateEvent<Collider2D> OnPhysicsTriggerEnter;
             public StateEvent<Collider2D> OnPhysicsTriggerExit;
+            public StateEvent<Collision2D> OnCollisionEnter;
+            public StateEvent<Collision2D> OnCollisionStay;
+            public StateEvent<Collision2D> OnCollisionExit;
+
             public StateEvent OnFixedUpdate;
         }
         public CircleCollider2D col;
@@ -75,6 +79,9 @@ namespace PolyRocket.Game
 
             StateMachine = new StateMachine<PrBallState, EventDiver>(this);
             StateMachine.ChangeState(PrBallState.Idle);
+            
+            // init data
+            _global.VPlayerDashLevel.Value = 0;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -94,13 +101,13 @@ namespace PolyRocket.Game
         {
             var direct = GetAimDirect(eventData);
             var scale = 1f;
-            var mag = direct.magnitude - _global.ballScreenRadius;
+            var mag = direct.magnitude - _global.BallScreenRadius;
             if (mag < 0f)
             {
                 return scale;
             }
 
-            return _global.ballScreenRadius / direct.magnitude;
+            return _global.BallScreenRadius / direct.magnitude;
         }
 
         private void ResetSpeed()
@@ -111,28 +118,28 @@ namespace PolyRocket.Game
         // global: do this check in all state
         public void OnPhysicsTrigger(Collider2D other)
         {
-            var otherGo = other.gameObject;
-            if (otherGo.CompareTag("Flag"))
+            var actor = other.gameObject.GetComponent<PrActorBase>();
+            if (actor is PrFlag)
             {
                 // mark game over
-                _global.EPlayerMoveTriggerFlag?.Invoke(otherGo);
+                _global.EPlayerMoveTriggerFlag?.Invoke(actor);
             }
-            else if (IsTrapTag(otherGo))
+            else if (IsTrapTag(actor))
             {
                 _global.EPlayerTriggerTrap?.Invoke();
             }
         }
 
-        private static bool IsTrapTag(GameObject go)
+        private static bool IsTrapTag(PrActorBase actor)
         {
-            return go.CompareTag("StaticTrap") || go.CompareTag("DynamicTrap");
+            return actor is PrTrapDynamic || actor is PrTrapStatic;
         }
         
         
         // reflection: State Machine
         public void Idle_OnPointerClick(PointerEventData eventData)
         {
-            EventTrack.Log("Idle Pointer Click");
+            // EventTrack.Log("Idle Pointer Click");
             
             var startPos = ballPhysics.Position;
             DoDash(eventData, startPos);
@@ -148,7 +155,7 @@ namespace PolyRocket.Game
         
         public void DashStart_Enter()
         {
-            EventTrack.Log("DashStart_Enter");
+            // EventTrack.Log("DashStart_Enter");
             var infoNode = _dashQueue.First;
             var info = infoNode.Value;
             var direct = info.ClickPos - info.StartPos;
@@ -162,7 +169,9 @@ namespace PolyRocket.Game
         public IEnumerator Dash_Enter()
         {
             // do something animation stuff
-            EventTrack.Log("Dash_Enter");
+            // EventTrack.Log("Dash_Enter");
+            _global.VPlayerDashLevel.Value++;
+            
             var info = _dashQueue.First.Value;
             info.Progress = 0.1f;
             var complete = false;
@@ -171,13 +180,13 @@ namespace PolyRocket.Game
             tweener.SetEase(Ease.Linear);
             tweener.OnComplete(() =>
             {
-                EventTrack.Log("Dash Complete Tween");
+                // EventTrack.Log("Dash Complete Tween");
                 Dash_OnFixedUpdate();
                 complete = true;
             });
 
             yield return new WaitUntil(() => complete);
-            EventTrack.Log("Dash_Enter_Complete");
+            // EventTrack.Log("Dash_Enter_Complete");
 
             // force refresh
             var next = info.Reason == DashInfo.EndReason.Default ? PrBallState.DashChain : PrBallState.DashEnd;
@@ -194,9 +203,9 @@ namespace PolyRocket.Game
             ballPhysics.rb.MovePosition(pos);
         }
 
-        public void Dash_OnCollisionEnter(Collider2D other)
+        public void Dash_OnCollisionEnter(Collision2D other)
         {
-            if (other.gameObject.CompareTag("StaticWall"))
+            if (other.otherCollider.gameObject.CompareTag("StaticWall"))
             {
                 var info = _dashQueue.First.Value;
                 info.Reason = DashInfo.EndReason.Collision;
@@ -215,25 +224,29 @@ namespace PolyRocket.Game
         {
             if (_isChainDash) return;
             
-            EventTrack.Log("Dash Chain End");
+            // EventTrack.Log("Dash Chain End");
             StateMachine.ChangeState(PrBallState.DashEnd);
         }
 
         public void DashChain_OnPointerClick(PointerEventData eventData)
         {
             // maybe condition check
-            EventTrack.Log("Dash Chain Pointer Click");
+            // EventTrack.Log("Dash Chain Pointer Click");s
 
             _isChainDash = true;
             DoDash(eventData, ballPhysics.Position);
         }
 
-        public void DashEnd_Enter()
+        public IEnumerator DashEnd_Enter()
         {
             // do something anime
             ballPhysics.rb.velocity = Vector2.zero;
             _dashQueue.Clear();
-            // todo add cd
+            
+            // reset dash level
+            _global.VPlayerDashLevel.Value = 0;
+            
+            yield return new WaitForSeconds(0.3f);
 
             StateMachine.ChangeState(PrBallState.Idle);
         }
