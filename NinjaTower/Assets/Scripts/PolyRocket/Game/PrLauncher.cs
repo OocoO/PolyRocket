@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Carotaa.Code;
 using UnityEngine;
 
@@ -8,9 +5,10 @@ namespace PolyRocket.Game
 {
     public class PrLauncher : MonoBehaviour
     {
-        private void Awake()
+        private void Start()
         {
-            PrGameManager.Instance.WakeUp();
+            PrCameraManager.Instance.WakeUp();
+            PrLevelManager.Instance.WakeUp();
             UIManager.Instance.WakeUp();
         }
     }

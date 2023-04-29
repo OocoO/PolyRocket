@@ -1,43 +1,27 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Carotaa.Code;
-using Cinemachine;
 using PolyRocket.UI;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace PolyRocket.Game
 {
-    // dependency: PrGlobal <- GameScripts <- Launcher
-    public class PrGameManager : MonoSingleton<PrGameManager>
+    public class PrLevelManager : Singleton<PrLevelManager>
     {
-        public CinemachineBrain m_camBrain;
-        public CinemachineVirtualCamera m_virtualCam;
-        public CinemachineConfiner2D m_camConfiner;
-        public Transform m_camTarget;
-        
-        private List<PrGameLevelInfo> _levels;
-        private PrGameLevelInfo _currentLevelInfo;
-        private PrGameLevel _currentLevel;
-        private int _currentIndex;
-
         private bool _cameraFollow;
-        
-        private bool _isGameStart;
+        private int _currentIndex;
+        private PrGameLevel _currentLevel;
+        private PrGameLevelInfo _currentLevelInfo;
         private bool _enableCameraDrag;
+
+        private bool _isGameStart;
+        private List<PrGameLevelInfo> _levels;
 
         private Vector2 _posLast;
 
-        
-        private void Awake()
+
+        protected override void OnCreate()
         {
             Physics2D.gravity = Vector2.zero;
-
-            m_camBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.LateUpdate;
-            m_virtualCam.Follow = m_camTarget;
 
             _levels = PrGameLevelInfo.GetAll();
             _currentIndex = 0;
@@ -45,37 +29,16 @@ namespace PolyRocket.Game
 
         public void JumpToLevel(PrGameLevelInfo levelInfo)
         {
-            if (_currentLevel) Destroy(_currentLevel.gameObject);
+            if (_currentLevel) Object.Destroy(_currentLevel.gameObject);
 
             _currentLevelInfo = levelInfo;
             var level = levelInfo.GetLevel();
-            var go = Instantiate(level.gameObject, transform);
+            var go = Object.Instantiate(level.gameObject);
             _currentLevel = go.GetComponent<PrGameLevel>();
             go.SetActive(true);
 
-            m_camConfiner.m_BoundingShape2D = _currentLevel.camConfine.PolygonCollider;
-            m_camConfiner.InvalidateCache();
-
-            // temp disable camera drag
-            // _enableCameraDrag = true;
-            
-            SetCameraFollow(true);
-            
 
             _isGameStart = true;
-        }
-
-        private void FixedUpdate()
-        {
-            UpdateCameraFollow();
-        }
-
-        private void UpdateCameraFollow()
-        {
-            if (_cameraFollow)
-            {
-                m_camTarget.position = _currentLevel.ball.ballPhysics.Position;
-            }
         }
 
         private void OnClickRestart()
@@ -95,7 +58,7 @@ namespace PolyRocket.Game
             if (_isGameStart)
             {
                 // do some effect
-                Destroy(flag.gameObject);
+                Object.Destroy(flag.gameObject);
                 _currentLevel.FlagCount--;
                 if (_currentLevel.FlagCount <= 0)
                 {
@@ -115,14 +78,14 @@ namespace PolyRocket.Game
         private void ShowGameOver()
         {
             PrUIPop.Show("Game Over", "Restart", OnClickRestart);
-            
+
             SetPhysicsPause(true);
         }
 
         private void ShowGameSuccess()
         {
             PrUIPop.Show("Level Complete", "Next", OnClickGotoNext);
-            
+
             SetPhysicsPause(true);
         }
 
@@ -144,15 +107,6 @@ namespace PolyRocket.Game
         private static void SetPhysicsPause(bool isPause)
         {
             Time.timeScale = isPause ? 0f : 1f;
-        }
-
-        private void SetCameraFollow(bool isFollow)
-        {
-            _cameraFollow = isFollow;
-            if (isFollow)
-            {
-                UpdateCameraFollow();
-            }
         }
     }
 }
