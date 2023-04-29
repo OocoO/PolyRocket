@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PolyRocket.UI
 {
-    [PageAddress("UI/PrPlayerHud")]
+    [PageAddress("UI/HudPage")]
     public class PrPlayerHud : PageBase
     {
         public TMP_Text dashCount;

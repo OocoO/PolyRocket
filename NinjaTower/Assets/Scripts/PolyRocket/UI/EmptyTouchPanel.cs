@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Carotaa.Code;
-using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace PolyRocket.Game
@@ -13,38 +11,35 @@ namespace PolyRocket.Game
         IPointerDownHandler,
         IPointerClickHandler
     {
-        private PrGameLauncher _launcher;
-        
-        public void Init(PrGameLauncher launcher)
-        {
-            _launcher = launcher;
-            // temp: support multi
-            Input.multiTouchEnabled = false;
-        }
+        public event Action<PointerEventData> EBeginDrag;
+        public event Action<PointerEventData> EDrag;
+        public event Action<PointerEventData> EEndDrag;
+        public event Action<PointerEventData> EPointerClick;
+        public event Action<PointerEventData> EPointerDown;
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _launcher.OnBeginDrag(eventData);
+            EBeginDrag?.Invoke(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            _launcher.OnDrag(eventData);
+            EDrag?.Invoke(eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _launcher.OnEndDrag(eventData);
+            EEndDrag?.Invoke(eventData);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _launcher.OnPointerClick(eventData);
+            EPointerClick?.Invoke(eventData);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _launcher.OnPointerDown(eventData);
+            EPointerDown?.Invoke(eventData);
         }
     }
 }

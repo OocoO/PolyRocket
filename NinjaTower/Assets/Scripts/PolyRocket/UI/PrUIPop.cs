@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace PolyRocket.UI
 {
+    [PageAddress("UI/PopPage")]
     public class PrUIPop: PageBase
     {
         // UI Pop
@@ -35,15 +36,13 @@ namespace PolyRocket.UI
         {
             base.OnPush(pushParam);
 
-            var module = pushParam[0] as Model;
+            var model = pushParam[0] as Model;
             
-            popTitle.text = "Game Over";
-            popBtnText.text = "Restart";
-
-            var onClick = new Button.ButtonClickedEvent();
             // ReSharper disable once PossibleNullReferenceException
-            onClick.AddListener(module.OnClick);
-            popBtn.onClick = onClick;
+            popTitle.text = model.Title;
+            popBtnText.text = model.TextBtn;
+
+            popBtn.onClick.AddListener(model.OnClick);
         }
     }
 }

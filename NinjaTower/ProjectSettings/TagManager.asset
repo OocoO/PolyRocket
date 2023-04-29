@@ -10,6 +10,7 @@ TagManager:
   - DynamicTrap
   - ForceField
   - StaticWall
+  - Castle
   layers:
   - Default
   - TransparentFX
@@ -24,8 +25,8 @@ TagManager:
   - 
   - 
   - 
-  - Env
-  - Camera
+  - 
+  - 
   - 
   - 
   - 

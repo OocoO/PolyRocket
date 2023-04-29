@@ -6,12 +6,12 @@ using Object = UnityEngine.Object;
 
 namespace Carotaa.Code
 {
-    public class UIManager : Singleton<UIManager>
+    public class UIManager : MonoSingleton<UIManager>
     {
         private const int PanelInterval = 100;
 
-        private Camera _camera;
-        private Canvas _rootCanvas;
+        [SerializeField] private Camera m_camera;
+        [SerializeField] private Canvas m_rootCanvas;
 
         private LinkedList<PageBase> _pageStack;
 
@@ -30,7 +30,7 @@ namespace Carotaa.Code
 
             var panelPath = GetPageAddress(pageType);
             var prefab = Resources.Load<GameObject>(panelPath);
-            var panel = Object.Instantiate(prefab, _rootCanvas.transform);
+            var panel = Object.Instantiate(prefab, m_rootCanvas.transform);
             var page = panel.GetComponent<PageBase>();
             _pageStack.AddLast(page);
             
