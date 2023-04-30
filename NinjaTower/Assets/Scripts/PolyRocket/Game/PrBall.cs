@@ -48,7 +48,7 @@ namespace PolyRocket.Game
         }
     }
     
-    public class PrBall : PrActorBase
+    public class PrBall : PrActor
     {
         public class EventDiver
         {
@@ -118,7 +118,7 @@ namespace PolyRocket.Game
         // global: do this check in all state
         public void OnPhysicsTrigger(Collider2D other)
         {
-            var actor = other.gameObject.GetComponent<PrActorBase>();
+            var actor = other.gameObject.GetComponent<PrActor>();
             if (actor is PrFlag)
             {
                 // mark game over
@@ -130,7 +130,7 @@ namespace PolyRocket.Game
             }
         }
 
-        private static bool IsTrapTag(PrActorBase actor)
+        private static bool IsTrapTag(PrActor actor)
         {
             return actor is PrTrapDynamic || actor is PrTrapStatic;
         }

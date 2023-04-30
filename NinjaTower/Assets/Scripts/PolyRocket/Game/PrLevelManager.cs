@@ -53,7 +53,7 @@ namespace PolyRocket.Game
             LevelFailed();
         }
 
-        private void OnPlayerTriggerFlag(PrActorBase flag)
+        private void OnPlayerTriggerFlag(PrActor flag)
         {
             if (_isGameStart)
             {

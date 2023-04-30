@@ -13,7 +13,7 @@ namespace PolyRocket.Game
         private PrBall _ball;
 
         public List<PrForceField> Fields { get; private set; }
-        public List<PrCollisionBase> CollisionObjs { get; private set; } 
+        public List<PrCollision> CollisionObjs { get; private set; } 
         private PrGlobal _global;
 
         public Vector2 Position => rb.position;
@@ -23,7 +23,7 @@ namespace PolyRocket.Game
             _ball = ball;
             _global = global;
             Fields = new List<PrForceField>();
-            CollisionObjs = new List<PrCollisionBase>();
+            CollisionObjs = new List<PrCollision>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -49,7 +49,7 @@ namespace PolyRocket.Game
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            CollisionObjs.Add(other.otherCollider.GetComponent<PrCollisionBase>());
+            CollisionObjs.Add(other.otherCollider.GetComponent<PrCollision>());
             _ball.StateMachine.Driver.OnCollisionEnter.Invoke(other);
         }
         
@@ -60,7 +60,7 @@ namespace PolyRocket.Game
 
         private void OnCollisionExit2D(Collision2D other)
         {
-            CollisionObjs.Remove(other.otherCollider.GetComponent<PrCollisionBase>());
+            CollisionObjs.Remove(other.otherCollider.GetComponent<PrCollision>());
             _ball.StateMachine.Driver.OnCollisionExit.Invoke(other);
         }
 

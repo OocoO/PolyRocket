@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PolyRocket.Game
 {
-    public class PrForceField : PrTriggerBase
+    public class PrForceField : PrTrigger
     {
         // public ParticleSystem.MinMaxCurve forceCurve;
         public enum ForceType

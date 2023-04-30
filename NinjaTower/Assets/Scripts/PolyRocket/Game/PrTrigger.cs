@@ -3,7 +3,7 @@
 namespace PolyRocket.Game
 {
     // base class for all env triggers
-    public class PrTriggerBase: PrActorBase
+    public class PrTrigger: PrActor
     {
         
     }

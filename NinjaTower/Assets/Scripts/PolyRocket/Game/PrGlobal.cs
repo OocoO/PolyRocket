@@ -9,7 +9,7 @@ namespace PolyRocket.Game
         // player related
         public float PlayerDashDistance = 8f;
         
-        public Action<PrActorBase> EPlayerMoveTriggerFlag;
+        public Action<PrActor> EPlayerMoveTriggerFlag;
 
         public ShareVariable<int> VPlayerDashLevel = ShareEvent.BuildVariable<int>(nameof(VPlayerDashLevel));
 

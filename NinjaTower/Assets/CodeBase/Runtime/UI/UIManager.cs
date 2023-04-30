@@ -10,10 +10,15 @@ namespace Carotaa.Code
     {
         private const int PanelInterval = 100;
 
-        [SerializeField] private Camera m_camera;
+        // [SerializeField] private Camera m_camera;
         [SerializeField] private Canvas m_rootCanvas;
 
         private LinkedList<PageBase> _pageStack;
+
+        private void Awake()
+        {
+            _pageStack = new LinkedList<PageBase>();
+        }
 
 
         public void Push<T>(params object[] pushParam) where T : PageBase

@@ -1,6 +1,6 @@
 ﻿namespace PolyRocket.Game
 {
-    public class PrWallStatic: PrCollisionBase
+    public class PrWallStatic: PrCollision
     {
     }
 }

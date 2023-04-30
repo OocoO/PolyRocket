@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Carotaa.Code
 {
@@ -8,8 +10,6 @@ namespace Carotaa.Code
 	/// </summary>
 	public class MonoHelper : MonoSingleton<MonoHelper>
     {
-        private readonly Dictionary<Action<object>, object> _dirtyEvents = new Dictionary<Action<object>, object>();
-
         public readonly ShareEvent<bool> MonoApplicationFocus =
             ShareEvent.BuildEvent<bool>("MonoHelper.OnApplicationFocus");
 
@@ -28,7 +28,6 @@ namespace Carotaa.Code
         private void LateUpdate()
         {
             MonoLateUpdate.Raise();
-            InvokeDirtyEvents();
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -40,26 +39,16 @@ namespace Carotaa.Code
         {
             MonoApplicationPause.Raise(pauseStatus);
         }
-
-
-        public void AddDirtyEvent(Action<object> sEvent, object param)
+        
+        public void DispatchAfterSeconds(Action action, float seconds)
         {
-            _dirtyEvents[sEvent] = param;
+            StartCoroutine(DispatchAfterSecondsCoroutine(action, seconds));
         }
-
-        private void InvokeDirtyEvents()
+        
+        private IEnumerator DispatchAfterSecondsCoroutine(Action action, float seconds)
         {
-            foreach (var kvp in _dirtyEvents)
-                try
-                {
-                    kvp.Key.Invoke(kvp.Value);
-                }
-                catch (Exception e)
-                {
-                    EventTrack.LogError(e);
-                }
-
-            _dirtyEvents.Clear();
+            yield return new WaitForSeconds(seconds);
+            action?.Invoke();
         }
     }
 }

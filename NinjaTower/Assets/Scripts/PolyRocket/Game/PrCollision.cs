@@ -2,7 +2,7 @@
 
 namespace PolyRocket.Game
 {
-    public class PrCollisionBase: PrActorBase
+    public class PrCollision: PrActor
     {
         
     }

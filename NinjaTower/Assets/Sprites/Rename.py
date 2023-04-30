@@ -14,7 +14,9 @@ if __name__ == "__main__":
         
         # // 3. Get the sub sub folder path
         layerFolderPath = os.path.join(cwd, subFolder, "layers")
+        # layerFolderPath = os.path.join(cwd, subFolder, "layers")
         fileDir = os.path.join(cwd, subFolder)
+        
 
         if not os.path.isdir(fileDir):
             continue

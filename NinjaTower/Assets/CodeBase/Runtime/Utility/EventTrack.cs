@@ -14,14 +14,9 @@ namespace Carotaa.Code
             _trace = new CycleArray<object>(TraceSize);
         }
 
-        public static void OnRuntimeInit()
+        public static void LogError(object message)
         {
-            Instance.WakeUp();
-        }
-
-        public static void LogError(object message, Exception e = null)
-        {
-            Debug.LogError(e);
+            Debug.LogError(message);
         }
 
         public static void Log(object message)
