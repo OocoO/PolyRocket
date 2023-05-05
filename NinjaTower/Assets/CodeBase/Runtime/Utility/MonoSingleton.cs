@@ -17,7 +17,7 @@ namespace Carotaa.Code
                 }
 #endif
 
-                if (!_singleton)
+                if (ReferenceEquals(_singleton, null))
                 {
                     _singleton = (T) FindObjectOfType(typeof(T));
 

@@ -162,7 +162,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.9245283, g: 0.8677123, b: 0.7622998, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -295,7 +295,6 @@ MonoBehaviour:
   m_camBrain: {fileID: 325686375}
   m_virtualCam: {fileID: 734764688}
   m_camConfiner: {fileID: 734764689}
-  m_camTarget: {fileID: 0}
   m_envRoot: {fileID: 1265235677}
 --- !u!1 &734764686
 GameObject:
@@ -479,7 +478,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b70b5a4803e22254394d1d4e86a34b2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_camera: {fileID: 2011903884}
   m_rootCanvas: {fileID: 940493046}
 --- !u!1 &1265235677
 GameObject:

@@ -13,12 +13,7 @@ namespace Carotaa.Code
         // [SerializeField] private Camera m_camera;
         [SerializeField] private Canvas m_rootCanvas;
 
-        private LinkedList<PageBase> _pageStack;
-
-        private void Awake()
-        {
-            _pageStack = new LinkedList<PageBase>();
-        }
+        private LinkedList<PageBase> _pageStack = new LinkedList<PageBase>();
 
 
         public void Push<T>(params object[] pushParam) where T : PageBase
@@ -62,9 +57,15 @@ namespace Carotaa.Code
             _pageStack.Remove(pageNode);
         }
 
+        public T Find<T>() where T : PageBase
+        {
+            return FindPageNode(typeof(T)).Value as T;
+        }
+
         private bool ContainsPage(Type pageType)
         {
-            return FindPageNode(pageType) != null;
+            var pageNode = FindPageNode(pageType);
+            return pageNode != null && pageNode.Value;
         }
 
         private LinkedListNode<PageBase> FindPageNode(Type pageType)

@@ -43,6 +43,17 @@ namespace PolyRocket.UI
             popBtnText.text = model.TextBtn;
 
             popBtn.onClick.AddListener(model.OnClick);
+
+            Time.timeScale = 0f;
+        }
+        
+        public override void OnPop(object[] popParam)
+        {
+            base.OnPop(popParam);
+            
+            popBtn.onClick.RemoveAllListeners();
+            
+            Time.timeScale = 1f;
         }
     }
 }
