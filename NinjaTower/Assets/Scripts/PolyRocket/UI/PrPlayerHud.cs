@@ -7,7 +7,7 @@ using UnityEngine;
 namespace PolyRocket.UI
 {
     [PageAddress("UI/HudPage")]
-    public class PrPlayerHud : PageBase
+    public class PrPlayerHud : UIPage
     {
         public EmptyTouchPanel m_touchPanel;
     }

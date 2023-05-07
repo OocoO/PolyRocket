@@ -20,29 +20,27 @@ namespace PolyRocket.Game
             
             public StateEvent<PointerEventData> OnPointerClick;
         }
-        
+
         public Rigidbody2D m_rb;
 
         public Vector2 m_acc;
 
-        private PrRocketGenerator _generator;
+        private PrRockGenerator _generator;
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
-        private Camera _mainCam;
+        private Camera _levelCamera;
         public StateMachine<State, EventDriver> StateMachine;
 
         public Vector2 Position => m_rb.position;
         public Vector2 Velocity => m_rb.velocity;
         
-        private void Awake()
+        private void Start()
         {
             var prefab = Resources.Load<GameObject>("Prefabs/RoundRocket");
-            var mainCam = PrCameraManager.Instance.m_MainCam;
-            
-            _mainCam = mainCam;
-            _generator = new PrRocketGenerator(prefab, null, mainCam, 1f);
+            _levelCamera = PrLevelManager.Instance.CurrentLevel.m_LevelCamera;
+            _generator = new PrRockGenerator(prefab, null, _levelCamera, 1f);
             _input = new PrPlayerInput(this);
-            _cameraModule = new PrPlayerCamera(this, mainCam);
+            _cameraModule = new PrPlayerCamera(this, _levelCamera);
 
             StateMachine = new StateMachine<State, EventDriver>(this);
             StateMachine.ChangeState(State.Idle);
@@ -52,8 +50,7 @@ namespace PolyRocket.Game
         {
             _generator.Update();
             _cameraModule.Update();
-            
-            
+
             StateMachine.Driver.OnUpdate?.Invoke();
         }
 
@@ -67,16 +64,16 @@ namespace PolyRocket.Game
             _input.OnDestroy();
         }
 
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             var control = other.gameObject.GetComponent<PrActor>();
-            if (control is PrCollision)
+            if (control is PrTrap)
             {
                 Debug.Log("Collision");
                 PrUIPop.Show("Game Over", "Restart", () =>
                 {
-                    Debug.Log("DoSomething");
+                    var info = PrLevelInfo.Find(1);
+                    info.JumpToLevel();
                 });
             }
         }
@@ -100,7 +97,7 @@ namespace PolyRocket.Game
 
         private void Launch_OnPointerClick(PointerEventData data)
         {
-            var clickWorldPos = _mainCam.ScreenToWorldPoint(data.position);
+            var clickWorldPos = _levelCamera.ScreenToWorldPoint(data.position);
 
             var playerX = transform.position.x;
             var isLeft = playerX > clickWorldPos.x;

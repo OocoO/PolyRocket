@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace PolyRocket.UI
 {
     [PageAddress("UI/PopPage")]
-    public class PrUIPop: PageBase
+    public class PrUIPop: UIPage
     {
         // UI Pop
         public TMP_Text popTitle;

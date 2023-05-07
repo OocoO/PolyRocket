@@ -13,10 +13,10 @@ namespace Carotaa.Code
         // [SerializeField] private Camera m_camera;
         [SerializeField] private Canvas m_rootCanvas;
 
-        private LinkedList<PageBase> _pageStack = new LinkedList<PageBase>();
+        private LinkedList<UIPage> _pageStack = new LinkedList<UIPage>();
 
 
-        public void Push<T>(params object[] pushParam) where T : PageBase
+        public void Push<T>(params object[] pushParam) where T : UIPage
         {
             Push(typeof(T), pushParam);
         }
@@ -31,15 +31,20 @@ namespace Carotaa.Code
             var panelPath = GetPageAddress(pageType);
             var prefab = Resources.Load<GameObject>(panelPath);
             var panel = Object.Instantiate(prefab, m_rootCanvas.transform);
-            var page = panel.GetComponent<PageBase>();
+            var page = panel.GetComponent<UIPage>();
             _pageStack.AddLast(page);
             
             InvokePageFunction(page.OnPush, pushParam);
         }
 
-        public void Pop<T>(params object[] popParam) where T : PageBase
+        public void Pop<T>(params object[] popParam) where T : UIPage
         {
             Pop(typeof(T), popParam);
+        }
+
+        public void Pop(UIPage page)
+        {
+            Pop(page.GetType(), null);
         }
 
         public void Pop(Type pageType, object[] popParam)
@@ -57,7 +62,7 @@ namespace Carotaa.Code
             _pageStack.Remove(pageNode);
         }
 
-        public T Find<T>() where T : PageBase
+        public T Find<T>() where T : UIPage
         {
             return FindPageNode(typeof(T)).Value as T;
         }
@@ -68,7 +73,7 @@ namespace Carotaa.Code
             return pageNode != null && pageNode.Value;
         }
 
-        private LinkedListNode<PageBase> FindPageNode(Type pageType)
+        private LinkedListNode<UIPage> FindPageNode(Type pageType)
         {
             return _pageStack.Find(x => x.GetType() == pageType);
         }

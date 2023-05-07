@@ -19,22 +19,29 @@ namespace PolyRocket.Game
             _player = player;
             _mainCam = camera;
             // ReSharper disable once PossibleNullReferenceException
-            _rb = _mainCam.GetComponent<Rigidbody2D>();
+            // _rb = _mainCam.GetComponent<Rigidbody2D>();
             _camTrans = _mainCam.transform;
 
-            SetCameraSize(10f);
+            SetCameraSize(8f);
+            StepPosition();
         }
 
         public void Update()
         {
-            _rb.position = _player.Position.y * Vector2.up;
-            
-            // RefreshCameraSize();
+            StepPosition();
+        }
+
+        private void StepPosition()
+        {
+            var offset = _cameraSize * 0.4f;
+            var pos = _camTrans.position;
+            pos.y = _player.Position.y + offset;
+            _camTrans.position = pos;
         }
 
         public void StartZoomOutAnim()
         {
-            var tweener = DOTween.To(() => _cameraSize, SetCameraSize, 20f, 5f);
+            var tweener = DOTween.To(() => _cameraSize, SetCameraSize, 16f, 5f);
             tweener.SetEase(Ease.OutCubic);
         }
 

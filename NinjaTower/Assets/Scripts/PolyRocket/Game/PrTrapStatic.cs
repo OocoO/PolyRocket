@@ -1,6 +1,6 @@
 ﻿namespace PolyRocket.Game
 {
-    public class PrTrapStatic: PrCollision
+    public class PrTrapStatic: PrTrap
     {
     }
 }

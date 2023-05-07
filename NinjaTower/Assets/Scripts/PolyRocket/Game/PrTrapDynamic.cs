@@ -8,7 +8,7 @@ using UnityEngine;
 namespace PolyRocket.Game
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PrTrapDynamic : PrCollision
+    public class PrTrapDynamic : PrTrap
     {
         public PathCreator creator;
 
