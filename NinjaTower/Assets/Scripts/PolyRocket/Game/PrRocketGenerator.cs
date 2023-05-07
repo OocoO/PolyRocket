@@ -44,12 +44,14 @@ namespace PolyRocket.Game
 
         private float _timer;
         private Random _random;
+        private Camera _camera;
 
-        public PrRocketGenerator(GameObject prefab, Transform parent, float interval)
+        public PrRocketGenerator(GameObject prefab, Transform parent, Camera camera, float interval)
         {
             _prefab = prefab;
             _parent = parent;
             _interval = interval;
+            _camera = camera;
 
             _random = new Random(7);
         }
@@ -84,7 +86,7 @@ namespace PolyRocket.Game
 
         private PrRocket Generate()
         {
-            var mainCam = PrCameraManager.Instance.m_MainCam;
+            var mainCam = _camera;
             var x = _random.Next(-100, 100) / 100f * mainCam.GetHalfWidth();
             var y = mainCam.transform.position.y + mainCam.orthographicSize + 10f;
 

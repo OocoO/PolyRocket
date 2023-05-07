@@ -21,18 +21,7 @@ namespace PolyRocket.Game
 
         private void OnClick(PointerEventData data)
         {
-            var mainCam = PrCameraManager.Instance.m_MainCam;
-            var clickWorldPos = mainCam.ScreenToWorldPoint(data.position);
-
-            var playerX = _player.transform.position.x;
-            if (playerX > clickWorldPos.x)
-            {
-                _player.MoveLeft();
-            }
-            else
-            {
-                _player.MoveRight();
-            }
+            _player.StateMachine.Driver.OnPointerClick?.Invoke(data);
         }
 
         public void OnDestroy()
