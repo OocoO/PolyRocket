@@ -18,7 +18,11 @@ namespace PolyRocket.Game
 
         public void JumpToLevel(PrLevelInfo levelInfo)
         {
-            if (_currentLevel) Object.Destroy(_currentLevel.gameObject);
+            if (_currentLevel)
+            {
+                _currentLevel.OnPop();
+                Object.Destroy(_currentLevel.gameObject);
+            }
 
             _currentLevelInfo = levelInfo;
             var level = levelInfo.GetLevel();
@@ -26,6 +30,7 @@ namespace PolyRocket.Game
             _currentLevel = go.GetComponent<PrLevel>();
             
             go.SetActive(true);
+            _currentLevel.OnPush();
         }
     }
 }

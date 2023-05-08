@@ -22,7 +22,7 @@ namespace PolyRocket.Game
             // _rb = _mainCam.GetComponent<Rigidbody2D>();
             _camTrans = _mainCam.transform;
 
-            SetCameraSize(8f);
+            SetCameraSize(6f);
             StepPosition();
         }
 
@@ -41,7 +41,7 @@ namespace PolyRocket.Game
 
         public void StartZoomOutAnim()
         {
-            var tweener = DOTween.To(() => _cameraSize, SetCameraSize, 16f, 5f);
+            var tweener = DOTween.To(() => _cameraSize, SetCameraSize, 12f, 5f);
             tweener.SetEase(Ease.OutCubic);
         }
 

@@ -12,12 +12,12 @@ namespace PolyRocket.Game
         public PrPlayer m_Player;
         public Camera m_LevelCamera;
         
-        public void Awake()
+        public void OnPush()
         {
             PrCameraManager.Instance.AddWorldCamera(m_LevelCamera);
         }
         
-        public void OnDestroy()
+        public void OnPop()
         {
             PrCameraManager.Instance.RemoveWorldCamera(m_LevelCamera);
         }

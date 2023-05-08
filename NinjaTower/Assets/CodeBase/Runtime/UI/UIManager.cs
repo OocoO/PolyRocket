@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Carotaa.Code
 {
@@ -12,9 +11,14 @@ namespace Carotaa.Code
 
         // [SerializeField] private Camera m_camera;
         [SerializeField] private Canvas m_rootCanvas;
+        private bool _isQuit = false;
 
-        private LinkedList<UIPage> _pageStack = new LinkedList<UIPage>();
+        private LinkedList<UIPage> _pageStack = new();
 
+        private void OnApplicationQuit()
+        {
+            _isQuit = true;
+        }
 
         public void Push<T>(params object[] pushParam) where T : UIPage
         {
@@ -23,17 +27,16 @@ namespace Carotaa.Code
 
         public void Push(Type pageType, object[] pushParam)
         {
-            if (ContainsPage(pageType))
-            {
-                throw new Exception($"Duplicate Page {pageType}");
-            }
+            if (_isQuit) return;
+
+            if (ContainsPage(pageType)) throw new Exception($"Duplicate Page {pageType}");
 
             var panelPath = GetPageAddress(pageType);
             var prefab = Resources.Load<GameObject>(panelPath);
-            var panel = Object.Instantiate(prefab, m_rootCanvas.transform);
+            var panel = Instantiate(prefab, m_rootCanvas.transform);
             var page = panel.GetComponent<UIPage>();
             _pageStack.AddLast(page);
-            
+
             InvokePageFunction(page.OnPush, pushParam);
         }
 
@@ -49,16 +52,15 @@ namespace Carotaa.Code
 
         public void Pop(Type pageType, object[] popParam)
         {
-            if (!ContainsPage(pageType))
-            {
-                throw new Exception($"Page not exist!");
-            }
+            if (_isQuit) return;
+
+            if (!ContainsPage(pageType)) throw new Exception($"Page not exist!");
 
             var pageNode = FindPageNode(pageType);
             var page = pageNode.Value;
             InvokePageFunction(page.OnPop, popParam);
-            
-            Object.Destroy(page.gameObject);
+
+            Destroy(page.gameObject);
             _pageStack.Remove(pageNode);
         }
 
@@ -78,7 +80,7 @@ namespace Carotaa.Code
             return _pageStack.Find(x => x.GetType() == pageType);
         }
 
-        private void InvokePageFunction(Action<object[]> action, object[] param)
+        private static void InvokePageFunction(Action<object[]> action, object[] param)
         {
             try
             {

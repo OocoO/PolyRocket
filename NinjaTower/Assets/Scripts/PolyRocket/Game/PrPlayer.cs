@@ -25,7 +25,6 @@ namespace PolyRocket.Game
 
         public Vector2 m_acc;
 
-        private PrRockGenerator _generator;
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
         private Camera _levelCamera;
@@ -36,9 +35,7 @@ namespace PolyRocket.Game
         
         private void Start()
         {
-            var prefab = Resources.Load<GameObject>("Prefabs/RoundRocket");
-            _levelCamera = PrLevelManager.Instance.CurrentLevel.m_LevelCamera;
-            _generator = new PrRockGenerator(prefab, null, _levelCamera, 1f);
+            _levelCamera = Level.m_LevelCamera;
             _input = new PrPlayerInput(this);
             _cameraModule = new PrPlayerCamera(this, _levelCamera);
 
@@ -48,7 +45,6 @@ namespace PolyRocket.Game
 
         private void Update()
         {
-            _generator.Update();
             _cameraModule.Update();
 
             StateMachine.Driver.OnUpdate?.Invoke();
