@@ -10,7 +10,7 @@ namespace PolyRocket.Game
         public void OnTriggerEnter2D(Collider2D other)
         {
             var actor = other.GetComponent<PrActor>();
-            if (actor)
+            if (actor && actor is not PrPlayer)
             {
                 // TODO: recycle
                 Destroy(actor.gameObject);

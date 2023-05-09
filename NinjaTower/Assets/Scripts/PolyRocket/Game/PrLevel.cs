@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using PolyRocket.SO;
 using UnityEngine;
 
 namespace PolyRocket.Game
@@ -11,6 +12,7 @@ namespace PolyRocket.Game
 
         public PrPlayer m_Player;
         public Camera m_LevelCamera;
+        public LevelConfig Config;
         
         public void OnPush()
         {

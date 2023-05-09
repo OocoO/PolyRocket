@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Carotaa.Code;
 using PolyRocket.UI;
 using UnityEngine;
@@ -14,18 +15,23 @@ namespace PolyRocket.Game
         
         private Vector2 _posLast;
         
-        public PrLevel CurrentLevel => _currentLevel;
-
         public void JumpToLevel(PrLevelInfo levelInfo)
+        {
+            MonoHelper.Instance.StartCoroutine(ChangeLevel(levelInfo));
+        }
+
+        private IEnumerator ChangeLevel(PrLevelInfo next)
         {
             if (_currentLevel)
             {
                 _currentLevel.OnPop();
                 Object.Destroy(_currentLevel.gameObject);
+                
+                yield return null;
             }
 
-            _currentLevelInfo = levelInfo;
-            var level = levelInfo.GetLevel();
+            _currentLevelInfo = next;
+            var level = next.GetLevel();
             var go = Object.Instantiate(level.gameObject);
             _currentLevel = go.GetComponent<PrLevel>();
             

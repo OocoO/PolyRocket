@@ -13,30 +13,35 @@ namespace PolyRocket.Game
         private PrPlayer _player;
         private Rigidbody2D _rb;
         private float _cameraSize;
+        private float _time;
 
         public PrPlayerCamera(PrPlayer player, Camera camera)
         {
             _player = player;
             _mainCam = camera;
             // ReSharper disable once PossibleNullReferenceException
-            // _rb = _mainCam.GetComponent<Rigidbody2D>();
+            _rb = _mainCam.GetComponent<Rigidbody2D>();
             _camTrans = _mainCam.transform;
+            _time = 0f;
 
             SetCameraSize(6f);
-            StepPosition();
+            InitPosition();
         }
 
-        public void Update()
-        {
-            StepPosition();
-        }
-
-        private void StepPosition()
+        private void InitPosition()
         {
             var offset = _cameraSize * 0.4f;
             var pos = _camTrans.position;
             pos.y = _player.Position.y + offset;
             _camTrans.position = pos;
+        }
+        
+        public void FixedUpdate()
+        {
+            _time += Time.deltaTime * Time.timeScale;
+            
+            var vy = _player.Level.Config.GetCameraSpeed(_time);
+            _rb.velocity = Vector2.up * vy;
         }
 
         public void StartZoomOutAnim()
