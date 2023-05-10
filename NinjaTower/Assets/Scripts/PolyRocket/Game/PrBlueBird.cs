@@ -1,4 +1,5 @@
 ﻿using System;
+using Carotaa.Code;
 using PathCreation;
 using UnityEngine;
 
@@ -37,6 +38,19 @@ namespace PolyRocket.Game
         private void OnDestroy()
         {
             if (m_Creator) Destroy(m_Creator.gameObject);
+        }
+
+        public override void OnTriggerWithPlayer(PrPlayer player)
+        {
+            var cam = player.Level.m_LevelCamera;
+            // addition check: both internal camera view
+            var bounds = cam.GetViewBound();
+            var isInSide = bounds.Contains(transform.position);
+            isInSide &= bounds.Contains(player.Position);
+            if (isInSide)
+            {
+                ShowGameOver();
+            }
         }
     }
 }

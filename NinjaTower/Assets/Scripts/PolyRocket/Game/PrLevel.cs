@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Carotaa.Code;
 using PolyRocket.SO;
 using UnityEngine;
 
@@ -13,7 +14,9 @@ namespace PolyRocket.Game
         public PrPlayer m_Player;
         public Camera m_LevelCamera;
         public LevelConfig Config;
-        
+
+        public readonly ShareVariable<int> BerryCount = new ShareVariable<int>();
+
         public void OnPush()
         {
             PrCameraManager.Instance.AddWorldCamera(m_LevelCamera);
@@ -22,6 +25,11 @@ namespace PolyRocket.Game
         public void OnPop()
         {
             PrCameraManager.Instance.RemoveWorldCamera(m_LevelCamera);
+        }
+        
+        public float GetClickPower()
+        {
+            return Config.ClickPowerOrigin + BerryCount.Value * Config.ClickPowerPerBerry;
         }
     }
 

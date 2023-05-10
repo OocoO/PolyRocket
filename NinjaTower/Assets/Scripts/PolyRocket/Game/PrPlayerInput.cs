@@ -11,7 +11,7 @@ namespace PolyRocket.Game
         
         public PrPlayerInput(PrPlayer player)
         {
-            UIManager.Instance.Push<PrPlayerHud>();
+            UIManager.Instance.Push<PrPlayerHud>(player);
             var hud = UIManager.Instance.Find<PrPlayerHud>();
             _panel = hud.m_touchPanel;
             _player = player;

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50baa3f09ff54c80a0e35bfb920ebf8e, type: 3}
   m_Name: PrLevelConfig
   m_EditorClassIdentifier: 
-  m_maxGameTime: 100
+  m_maxGameTime: 500
   m_cameraSpeedCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.5
+      value: 2
       inSlope: 2
       outSlope: 2
       tangentMode: 0
@@ -27,7 +27,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 3
+      value: 10
       inSlope: -0.027746316
       outSlope: Infinity
       tangentMode: 97
@@ -37,7 +37,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  PlayerLaunchSpeed: 5
-  PlayerClickPower: 3
-  PlayerGravityScale: 0.4
-  PlayerSpeedDcc: 0.99
+  LaunchSpeed: 5
+  ClickPowerOrigin: 3
+  ClickPowerPerBerry: 0.1
+  GravityScale: 0.4
+  SpeedDcc: 0.99

@@ -41,7 +41,7 @@ namespace PolyRocket.Game
             StateMachine = new StateMachine<State, EventDriver>(this);
             StateMachine.ChangeState(State.Idle);
 
-            m_rb.gravityScale = Level.Config.PlayerGravityScale;
+            m_rb.gravityScale = Level.Config.GravityScale;
         }
 
         private void Update()
@@ -62,24 +62,9 @@ namespace PolyRocket.Game
         private void OnTriggerEnter2D(Collider2D other)
         {
             var control = other.gameObject.GetComponent<PrActor>();
-            if (control is PrTrap)
+            if (control is PrTrigger trigger)
             {
-                PrUIPop.Show("Game Over", "Restart", () =>
-                {
-                    var info = PrLevelInfo.Find(1);
-                    info.JumpToLevel();
-                    UIManager.Instance.Pop<PrUIPop>();
-                });
-            }
-            else if (control is PrCameraBorder)
-            {
-                // Move Player to Another Screen Border When out of screen
-                var speedX = m_rb.velocity.x;
-                var moveLeft = speedX > 0f;
-                var camBounds = Level.m_LevelCamera.GetViewBound(1.1f);
-                var targetX = moveLeft ? camBounds.min.x : camBounds.max.x;
-                var targetPos = new Vector2(targetX, m_rb.position.y);
-                m_rb.position = targetPos;
+                trigger.OnTriggerWithPlayer(this);
             }
         }
 
@@ -91,7 +76,7 @@ namespace PolyRocket.Game
         
         private void Launch_Enter()
         {
-            m_rb.AddForce(Vector2.up * Level.Config.PlayerLaunchSpeed, ForceMode2D.Impulse);
+            m_rb.AddForce(Vector2.up * Level.Config.LaunchSpeed, ForceMode2D.Impulse);
             
             _cameraModule.StartZoomOutAnim();
         }
@@ -101,7 +86,7 @@ namespace PolyRocket.Game
         {
             _cameraModule.FixedUpdate();
             
-            m_rb.velocity *= Level.Config.PlayerSpeedDcc;
+            m_rb.velocity *= Level.Config.SpeedDcc;
         }
 
         private void Launch_OnPointerClick(PointerEventData data)
@@ -111,7 +96,7 @@ namespace PolyRocket.Game
             var playerPos = transform.position;
             var direct = ((Vector2) (clickWorldPos - playerPos)).normalized;
 
-            m_rb.AddForce(direct * Level.Config.PlayerClickPower, ForceMode2D.Impulse);
+            m_rb.AddForce(direct * Level.GetClickPower(), ForceMode2D.Impulse);
         }
     }
 }

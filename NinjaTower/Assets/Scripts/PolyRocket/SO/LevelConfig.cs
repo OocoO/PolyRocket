@@ -8,10 +8,13 @@ namespace PolyRocket.SO
         public float m_maxGameTime;
         public AnimationCurve m_cameraSpeedCurve;
 
-        public float PlayerLaunchSpeed;
-        public float PlayerClickPower;
-        public float PlayerGravityScale;
-        public float PlayerSpeedDcc;
+        // Player Relative Config
+        public float LaunchSpeed;
+        public float ClickPowerOrigin;
+        public float ClickPowerPerBerry;
+        
+        public float GravityScale;
+        public float SpeedDcc;
         
         public float GetCameraSpeed(float time)
         {
