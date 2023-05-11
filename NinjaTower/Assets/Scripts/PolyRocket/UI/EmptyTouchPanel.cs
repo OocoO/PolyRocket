@@ -9,13 +9,15 @@ namespace PolyRocket.Game
         IBeginDragHandler, 
         IEndDragHandler, 
         IPointerDownHandler,
-        IPointerClickHandler
+        IPointerClickHandler,
+        IPointerUpHandler
     {
         public event Action<PointerEventData> EBeginDrag;
         public event Action<PointerEventData> EDrag;
         public event Action<PointerEventData> EEndDrag;
         public event Action<PointerEventData> EPointerClick;
         public event Action<PointerEventData> EPointerDown;
+        public event Action<PointerEventData> EPointerUp;
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -40,6 +42,11 @@ namespace PolyRocket.Game
         public void OnPointerDown(PointerEventData eventData)
         {
             EPointerDown?.Invoke(eventData);
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            EPointerUp?.Invoke(eventData);
         }
     }
 }

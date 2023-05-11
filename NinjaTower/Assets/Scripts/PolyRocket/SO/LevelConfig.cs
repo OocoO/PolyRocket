@@ -15,6 +15,9 @@ namespace PolyRocket.SO
         
         public float GravityScale;
         public float SpeedDcc;
+
+        public float m_MainForce;
+        public float m_SideForce;
         
         public float GetCameraSpeed(float time)
         {

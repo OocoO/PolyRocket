@@ -32,11 +32,11 @@ namespace PolyRocket.UI
             UIManager.Instance.Push<PrUIPop>(model);
         }
 
-        public override void OnPush(object[] pushParam)
+        public override void OnPush()
         {
-            base.OnPush(pushParam);
+            base.OnPush();
 
-            var model = pushParam[0] as Model;
+            var model = PushParam[0] as Model;
             
             // ReSharper disable once PossibleNullReferenceException
             popTitle.text = model.Title;
@@ -47,9 +47,9 @@ namespace PolyRocket.UI
             Time.timeScale = 0f;
         }
         
-        public override void OnPop(object[] popParam)
+        public override void OnPop()
         {
-            base.OnPop(popParam);
+            base.OnPop();
             
             popBtn.onClick.RemoveAllListeners();
             

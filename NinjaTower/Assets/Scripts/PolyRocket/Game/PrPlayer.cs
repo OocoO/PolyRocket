@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Carotaa.Code;
 using MonsterLove.StateMachine;
 using PolyRocket.UI;
@@ -18,8 +20,6 @@ namespace PolyRocket.Game
         {
             public StateEvent OnUpdate;
             public StateEvent OnFixedUpdate;
-            
-            public StateEvent<PointerEventData> OnPointerClick;
         }
 
         public Rigidbody2D m_rb;
@@ -27,6 +27,12 @@ namespace PolyRocket.Game
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
         private Camera _levelCamera;
+        private List<RocketModule> _rocketModules;
+
+        public RocketSideModule SideLeft;
+        public RocketSideModule SideRight;
+        public RocketMainModule Main;
+
         public StateMachine<State, EventDriver> StateMachine;
 
         public Vector2 Position => m_rb.position;
@@ -37,6 +43,16 @@ namespace PolyRocket.Game
             _levelCamera = Level.m_LevelCamera;
             _input = new PrPlayerInput(this);
             _cameraModule = new PrPlayerCamera(this, _levelCamera);
+            _rocketModules = new List<RocketModule>();
+            
+            // init rocket modules
+            Main = new RocketMainModule(RocketModule.Name.Main, this);
+            SideLeft = new RocketSideModule(RocketModule.Name.Left, this, 60f);
+            SideRight = new RocketSideModule(RocketModule.Name.Right, this, 120f);
+            
+            _rocketModules.Add(Main);
+            _rocketModules.Add(SideLeft);
+            _rocketModules.Add(SideRight);
 
             StateMachine = new StateMachine<State, EventDriver>(this);
             StateMachine.ChangeState(State.Idle);
@@ -46,12 +62,19 @@ namespace PolyRocket.Game
 
         private void Update()
         {
+            foreach (var module in _rocketModules)
+            {
+                module.OnUpdate();
+            }
+            
             StateMachine.Driver.OnUpdate?.Invoke();
         }
 
         private void FixedUpdate()
         {
             StateMachine.Driver.OnFixedUpdate?.Invoke();
+            
+            m_rb.velocity *= Level.Config.SpeedDcc;
         }
 
         private void OnDestroy()
@@ -69,24 +92,28 @@ namespace PolyRocket.Game
         }
 
         // reflection: state machine
-        private void Idle_OnPointerClick(PointerEventData data)
+        private void Idle_Update()
         {
-            StateMachine.ChangeState(State.Launch);
+            if (SideLeft.IsActive && SideRight.IsActive)
+            {
+                // launch
+                StateMachine.ChangeState(State.Launch);
+            }
         }
-        
         private void Launch_Enter()
         {
-            m_rb.AddForce(Vector2.up * Level.Config.LaunchSpeed, ForceMode2D.Impulse);
-            
+            Main.SetActive(true);
             _cameraModule.StartZoomOutAnim();
         }
         
-        
         private void Launch_OnFixedUpdate()
         {
-            _cameraModule.FixedUpdate();
+            foreach (var module in _rocketModules)
+            {
+                module.OnFixedUpdate();
+            }
             
-            m_rb.velocity *= Level.Config.SpeedDcc;
+            _cameraModule.FixedUpdate();
         }
 
         private void Launch_OnPointerClick(PointerEventData data)

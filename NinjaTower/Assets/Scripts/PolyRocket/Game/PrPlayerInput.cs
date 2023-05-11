@@ -6,27 +6,45 @@ namespace PolyRocket.Game
 {
     public class PrPlayerInput
     {
-        private readonly EmptyTouchPanel _panel;
+        private readonly PrPlayerHud _hud;
         private readonly PrPlayer _player;
         
         public PrPlayerInput(PrPlayer player)
         {
             UIManager.Instance.Push<PrPlayerHud>(player);
-            var hud = UIManager.Instance.Find<PrPlayerHud>();
-            _panel = hud.m_touchPanel;
+            _hud = UIManager.Instance.Find<PrPlayerHud>();
             _player = player;
 
-            _panel.EPointerClick += OnClick;
+            _hud.m_LeftButton.EPointerDown += OnPointerDownLeft;
+            _hud.m_LeftButton.EPointerUp += OnPointerUpLeft;
+            _hud.m_RightButton.EPointerDown += OnPointerDownRight;
+            _hud.m_RightButton.EPointerUp += OnPointerUpRight;
         }
 
-        private void OnClick(PointerEventData data)
+        private void OnPointerDownLeft(PointerEventData data)
         {
-            _player.StateMachine.Driver.OnPointerClick?.Invoke(data);
+            _player.SideLeft.SetActive(true);
         }
+        
+        private void OnPointerUpLeft(PointerEventData data)
+        {
+            _player.SideLeft.SetActive(false);
+        }
+        
+        private void OnPointerDownRight(PointerEventData data)
+        {
+            _player.SideRight.SetActive(true);
+        }
+        
+        private void OnPointerUpRight(PointerEventData data)
+        {
+            _player.SideRight.SetActive(false);
+        }
+        
 
         public void OnDestroy()
         {
-            UIManager.Instance.Pop<PrPlayerHud>();
+            UIManager.Instance.Pop(_hud);
         }
     }
 }

@@ -9,9 +9,9 @@ namespace PolyRocket.UI
     {
         public Button m_StartBtn;
 
-        public override void OnPush(object[] pushParam)
+        public override void OnPush()
         {
-            base.OnPush(pushParam);
+            base.OnPush();
             
             m_StartBtn.onClick.AddListener(OnClickStartBtn);
         }

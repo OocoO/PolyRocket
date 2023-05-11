@@ -37,20 +37,21 @@ namespace Carotaa.Code
             var page = panel.GetComponent<UIPage>();
             _pageStack.AddLast(page);
 
-            InvokePageFunction(page.OnPush, pushParam);
+            page.PushParam = pushParam;
+            InvokePageFunction(page.OnPush);
         }
 
-        public void Pop<T>(params object[] popParam) where T : UIPage
+        public void Pop<T>() where T : UIPage
         {
-            Pop(typeof(T), popParam);
+            Pop(typeof(T));
         }
 
         public void Pop(UIPage page)
         {
-            Pop(page.GetType(), null);
+            Pop(page.GetType());
         }
 
-        public void Pop(Type pageType, object[] popParam)
+        public void Pop(Type pageType)
         {
             if (_isQuit) return;
 
@@ -58,7 +59,7 @@ namespace Carotaa.Code
 
             var pageNode = FindPageNode(pageType);
             var page = pageNode.Value;
-            InvokePageFunction(page.OnPop, popParam);
+            InvokePageFunction(page.OnPop);
 
             Destroy(page.gameObject);
             _pageStack.Remove(pageNode);
@@ -80,11 +81,11 @@ namespace Carotaa.Code
             return _pageStack.Find(x => x.GetType() == pageType);
         }
 
-        private static void InvokePageFunction(Action<object[]> action, object[] param)
+        private static void InvokePageFunction(Action action)
         {
             try
             {
-                action.Invoke(param);
+                action.Invoke();
             }
             catch (Exception e)
             {

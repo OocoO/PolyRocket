@@ -7,11 +7,13 @@ namespace Carotaa.Code
     [RequireComponent(typeof(GraphicRaycaster))]
     public abstract class UIPage : MonoBehaviour
     {
-        public virtual void OnPush(object[] pushParam)
+        public object[] PushParam;
+        
+        public virtual void OnPush()
         {
         }
 
-        public virtual void OnPop(object[] popParam)
+        public virtual void OnPop()
         {
         }
     }
