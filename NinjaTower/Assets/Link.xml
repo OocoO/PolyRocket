@@ -1,0 +1,4 @@
+<linker>
+  <!--Preserve types and members in an assembly-->
+  <assembly fullname="MonsterLove.StateMachine.Runtime" preserve="all"/>
+</linker>
