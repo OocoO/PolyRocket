@@ -42,3 +42,5 @@ MonoBehaviour:
   ClickPowerPerBerry: 0.1
   GravityScale: 0.4
   SpeedDcc: 0.99
+  m_MainForce: 8
+  m_SideForce: 4

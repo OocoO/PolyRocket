@@ -47,8 +47,8 @@ namespace PolyRocket.Game
             
             // init rocket modules
             Main = new RocketMainModule(RocketModule.Name.Main, this);
-            SideLeft = new RocketSideModule(RocketModule.Name.Left, this, 60f);
-            SideRight = new RocketSideModule(RocketModule.Name.Right, this, 120f);
+            SideLeft = new RocketSideModule(RocketModule.Name.Left, this, 45f);
+            SideRight = new RocketSideModule(RocketModule.Name.Right, this, 135f);
             
             _rocketModules.Add(Main);
             _rocketModules.Add(SideLeft);
@@ -62,6 +62,8 @@ namespace PolyRocket.Game
 
         private void Update()
         {
+            _input.Update();
+
             foreach (var module in _rocketModules)
             {
                 module.OnUpdate();
@@ -73,8 +75,7 @@ namespace PolyRocket.Game
         private void FixedUpdate()
         {
             StateMachine.Driver.OnFixedUpdate?.Invoke();
-            
-            m_rb.velocity *= Level.Config.SpeedDcc;
+            LateFixedUpdate();
         }
 
         private void OnDestroy()
@@ -92,7 +93,7 @@ namespace PolyRocket.Game
         }
 
         // reflection: state machine
-        private void Idle_Update()
+        private void Idle_OnUpdate()
         {
             if (SideLeft.IsActive && SideRight.IsActive)
             {
@@ -102,8 +103,14 @@ namespace PolyRocket.Game
         }
         private void Launch_Enter()
         {
-            Main.SetActive(true);
+            m_rb.AddForce(Level.Config.LaunchSpeed * Vector2.up, ForceMode2D.Impulse);
+            
             _cameraModule.StartZoomOutAnim();
+        }
+
+        private void Launch_OnUpdate()
+        {
+            _cameraModule.Update();
         }
         
         private void Launch_OnFixedUpdate()
@@ -112,8 +119,6 @@ namespace PolyRocket.Game
             {
                 module.OnFixedUpdate();
             }
-            
-            _cameraModule.FixedUpdate();
         }
 
         private void Launch_OnPointerClick(PointerEventData data)
@@ -124,6 +129,28 @@ namespace PolyRocket.Game
             var direct = ((Vector2) (clickWorldPos - playerPos)).normalized;
 
             m_rb.AddForce(direct * Level.GetClickPower(), ForceMode2D.Impulse);
+        }
+
+        private void LateFixedUpdate()
+        {
+            // velocity dcc
+            var velocity = m_rb.velocity;
+            velocity.x *= Level.Config.SpeedDcc;
+            m_rb.velocity = velocity;
+
+            // Move Player to Another Screen Border When out of screen
+            var camBounds = Level.m_LevelCamera.GetViewBound(1.05f);
+            var currentPos = m_rb.position;
+            if (camBounds.Contains(currentPos))
+            {
+                return;
+            }
+
+            var speedX = m_rb.velocity.x;
+            var moveLeft = speedX > 0f;
+            var targetX = moveLeft ? camBounds.min.x : camBounds.max.x;
+            var targetPos = new Vector2(targetX, currentPos.y);
+            m_rb.position = targetPos;
         }
     }
 }

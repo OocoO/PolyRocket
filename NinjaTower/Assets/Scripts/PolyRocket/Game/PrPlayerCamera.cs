@@ -38,7 +38,7 @@ namespace PolyRocket.Game
             _camTrans.position = pos;
         }
         
-        public void FixedUpdate()
+        public void Update()
         {
             _time += Time.deltaTime * Time.timeScale;
             
@@ -46,14 +46,25 @@ namespace PolyRocket.Game
 
             var camBottom = _rb.position.y - _cameraHalfHeight;
             var camHeight = _cameraHalfHeight * 2f;
-            var pos = (_player.Position.y - camBottom) / camHeight;
+            var playerPos = _player.Position.y;
+            var pos = (playerPos - camBottom) / camHeight;
             
-            var inSoftZoom = pos > SoftZoom && pos <= HardZoom;
-            
-            var softSpeed = inSoftZoom ? _player.Velocity.y * 0.5f : 0f;
-            var hardSpeed = Mathf.Max(pos - HardZoom, 0f) / Time.deltaTime;
+            var inSoftZoom = pos > SoftZoom;
+            var inHardZoom = pos > HardZoom;
 
-            _rb.velocity = Vector2.up * (baseSpeed + softSpeed + hardSpeed);
+            if (inSoftZoom)
+            {
+                _rb.velocity = Vector2.up * (baseSpeed + _player.Velocity.y * 0.3f);
+            }
+            else
+            {
+                _rb.velocity = Vector2.up * (baseSpeed);
+            }
+            
+            if (inHardZoom)
+            {
+                _rb.MovePosition(Vector2.up * (playerPos - camHeight * (HardZoom - 0.5f)));
+            }
         }
 
         public void StartZoomOutAnim()

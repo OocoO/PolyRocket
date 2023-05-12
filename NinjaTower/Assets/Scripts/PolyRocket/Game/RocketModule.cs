@@ -33,8 +33,6 @@ namespace PolyRocket.Game
         }
         
         public virtual void OnUpdate(){}
-
-        public abstract void SetActive(bool active);
     }
 
     public class RocketSideModule : RocketModule
@@ -48,7 +46,7 @@ namespace PolyRocket.Game
             _direct = Quaternion.Euler(Vector3.forward * direct) * Vector2.right;
         }
 
-        public override void SetActive(bool active)
+        public void SetActive(bool active)
         {
             IsActive = active;
         }
@@ -66,20 +64,24 @@ namespace PolyRocket.Game
 
     public class RocketMainModule : RocketModule
     {
+        public bool IsActive;
         public RocketMainModule(Name name, PrPlayer player) : base(name, player)
         {
-        }
-
-        public override  void SetActive(bool active)
-        {
-            // throw new System.NotImplementedException();
         }
 
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();
-            
-            Rb.AddForce(Vector2.up * Level.Config.m_MainForce);
+
+            if (IsActive)
+            {
+                Rb.AddForce(Vector2.up * Level.Config.m_MainForce);
+            }
+        }
+        
+        public void SetActive(bool active)
+        {
+            IsActive = active;
         }
     }
 }

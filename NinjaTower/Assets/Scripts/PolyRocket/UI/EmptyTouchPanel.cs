@@ -1,9 +1,11 @@
 using System;
 using Carotaa.Code;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace PolyRocket.Game
 {
+    [RequireComponent(typeof(CanvasRenderer))]
     public class EmptyTouchPanel : Empty4Raycaster, 
         IDragHandler, 
         IBeginDragHandler, 
