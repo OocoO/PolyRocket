@@ -44,11 +44,12 @@ namespace PolyRocket.Game
             _input = new PrPlayerInput(this);
             _cameraModule = new PrPlayerCamera(this, _levelCamera);
             _rocketModules = new List<RocketModule>();
-            
+
+            var config = Level.Config;
             // init rocket modules
             Main = new RocketMainModule(RocketModule.Name.Main, this);
-            SideLeft = new RocketSideModule(RocketModule.Name.Left, this, 45f);
-            SideRight = new RocketSideModule(RocketModule.Name.Right, this, 135f);
+            SideLeft = new RocketSideModule(RocketModule.Name.Left, this, config.m_LeftForceDirect);
+            SideRight = new RocketSideModule(RocketModule.Name.Right, this, 180f - config.m_LeftForceDirect);
             
             _rocketModules.Add(Main);
             _rocketModules.Add(SideLeft);
@@ -111,6 +112,7 @@ namespace PolyRocket.Game
         private void Launch_OnUpdate()
         {
             _cameraModule.Update();
+            StatisticUpdate();
         }
         
         private void Launch_OnFixedUpdate()
@@ -134,9 +136,7 @@ namespace PolyRocket.Game
         private void LateFixedUpdate()
         {
             // velocity dcc
-            var velocity = m_rb.velocity;
-            velocity.x *= Level.Config.SpeedDcc;
-            m_rb.velocity = velocity;
+            m_rb.velocity *= Level.Config.SpeedDcc;
 
             // Move Player to Another Screen Border When out of screen
             var camBounds = Level.m_LevelCamera.GetViewBound(1.05f);
@@ -151,6 +151,18 @@ namespace PolyRocket.Game
             var targetX = moveLeft ? camBounds.min.x : camBounds.max.x;
             var targetPos = new Vector2(targetX, currentPos.y);
             m_rb.position = targetPos;
+        }
+
+        private void StatisticUpdate()
+        {
+            var height = Level.Height.Value;
+            var currentHeight = m_rb.position.y;
+            if (height < currentHeight)
+            {
+                Level.Height.Value= m_rb.position.y;
+            }
+            
+            Level.LaunchTime.Value += Time.deltaTime;
         }
     }
 }

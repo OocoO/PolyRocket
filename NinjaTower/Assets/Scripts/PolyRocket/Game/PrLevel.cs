@@ -16,9 +16,14 @@ namespace PolyRocket.Game
         public LevelConfig Config;
 
         public readonly ShareVariable<int> BerryCount = new ShareVariable<int>();
+        public readonly ShareVariable<float> LaunchTime = new ShareVariable<float>();
+        public readonly ShareVariable<float> Height = new ShareVariable<float>();
 
         public void OnPush()
         {
+            LaunchTime.Value = 0f;
+            Height.Value = 0f;
+            
             PrCameraManager.Instance.AddWorldCamera(m_LevelCamera);
         }
         

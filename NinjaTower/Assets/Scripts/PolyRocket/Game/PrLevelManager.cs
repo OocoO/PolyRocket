@@ -34,9 +34,8 @@ namespace PolyRocket.Game
             var level = next.GetLevel();
             var go = Object.Instantiate(level.gameObject);
             _currentLevel = go.GetComponent<PrLevel>();
-            
-            go.SetActive(true);
             _currentLevel.OnPush();
+            go.SetActive(true);
         }
     }
 }

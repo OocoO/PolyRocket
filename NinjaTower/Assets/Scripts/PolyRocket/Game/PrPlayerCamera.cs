@@ -6,8 +6,6 @@ namespace PolyRocket.Game
     public class PrPlayerCamera
     {
         private const float OrthographicCameraSize = 30f;
-        private const float SoftZoom = 0.2f;
-        private const float HardZoom = 0.8f;
         
         private Transform _camTrans;
         private Camera _mainCam;
@@ -41,16 +39,17 @@ namespace PolyRocket.Game
         public void Update()
         {
             _time += Time.deltaTime * Time.timeScale;
-            
-            var baseSpeed = _player.Level.Config.GetCameraSpeed(_time);
+
+            var config = _player.Level.Config;
+            var baseSpeed = config.GetCameraSpeed(_time);
 
             var camBottom = _rb.position.y - _cameraHalfHeight;
             var camHeight = _cameraHalfHeight * 2f;
             var playerPos = _player.Position.y;
             var pos = (playerPos - camBottom) / camHeight;
             
-            var inSoftZoom = pos > SoftZoom;
-            var inHardZoom = pos > HardZoom;
+            var inSoftZoom = pos > config.m_CameraSoftZoom;
+            var inHardZoom = pos > config.m_CameraHardZoom;
 
             if (inSoftZoom)
             {
@@ -63,7 +62,8 @@ namespace PolyRocket.Game
             
             if (inHardZoom)
             {
-                _rb.MovePosition(Vector2.up * (playerPos - camHeight * (HardZoom - 0.5f)));
+                _rb.MovePosition(Vector2.up * 
+                                 (playerPos - camHeight * (config.m_CameraHardZoom - 0.5f)));
             }
         }
 

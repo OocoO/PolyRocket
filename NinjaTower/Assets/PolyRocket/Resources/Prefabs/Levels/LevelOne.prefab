@@ -2852,7 +2852,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Prefab: {fileID: 1257449480872863950}
-  m_DistanceInterval: 5
+  m_TimeInterval: 1
+  m_DistanceInterval: 10
 --- !u!1 &985337945859081862
 GameObject:
   m_ObjectHideFlags: 0
@@ -3036,7 +3037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Prefab: {fileID: 1378310913114995098}
-  m_DistanceInterval: 10
+  m_TimeInterval: 5
+  m_DistanceInterval: 100
 --- !u!1 &5888083879194279223
 GameObject:
   m_ObjectHideFlags: 0
