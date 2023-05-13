@@ -1,9 +1,8 @@
-﻿using System;
-using Carotaa.Code;
+﻿using Carotaa.Code;
 using PathCreation;
 using UnityEngine;
 
-namespace PolyRocket.Game
+namespace PolyRocket.Game.Actor
 {
     public class PrBlueBird : PrTrap
     {
@@ -35,8 +34,10 @@ namespace PolyRocket.Game
             m_SpriteRenderer.flipX = isFlip;
         }
 
-        private void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
+            
             if (m_Creator) Destroy(m_Creator.gameObject);
         }
 

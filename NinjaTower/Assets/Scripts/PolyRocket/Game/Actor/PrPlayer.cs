@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Carotaa.Code;
 using MonsterLove.StateMachine;
-using PolyRocket.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace PolyRocket.Game
+namespace PolyRocket.Game.Actor
 {
     public class PrPlayer : PrActor
     {
@@ -26,6 +23,7 @@ namespace PolyRocket.Game
         
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
+        private GeneratorManager _generator;
         private Camera _levelCamera;
         private List<RocketModule> _rocketModules;
 
@@ -35,14 +33,17 @@ namespace PolyRocket.Game
 
         public StateMachine<State, EventDriver> StateMachine;
 
-        public Vector2 Position => m_rb.position;
+        public override Vector2 Position => m_rb.position;
         public Vector2 Velocity => m_rb.velocity;
         
-        private void Start()
+        public override void Start()
         {
+            base.Start();
+            
             _levelCamera = Level.m_LevelCamera;
             _input = new PrPlayerInput(this);
             _cameraModule = new PrPlayerCamera(this, _levelCamera);
+            _generator = new GeneratorManager(this);
             _rocketModules = new List<RocketModule>();
 
             var config = Level.Config;
@@ -79,9 +80,12 @@ namespace PolyRocket.Game
             LateFixedUpdate();
         }
 
-        private void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
+            
             _input.OnDestroy();
+            _generator.OnDestroy();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -112,6 +116,7 @@ namespace PolyRocket.Game
         private void Launch_OnUpdate()
         {
             _cameraModule.Update();
+            _generator.Update();
             StatisticUpdate();
         }
         

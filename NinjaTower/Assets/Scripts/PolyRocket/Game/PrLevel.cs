@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Carotaa.Code;
+using PolyRocket.Game.Actor;
 using PolyRocket.SO;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace PolyRocket.Game
         public readonly ShareVariable<int> BerryCount = new ShareVariable<int>();
         public readonly ShareVariable<float> LaunchTime = new ShareVariable<float>();
         public readonly ShareVariable<float> Height = new ShareVariable<float>();
+
+        [NonSerialized] public List<PrActor> Actors = new List<PrActor>();
 
         public float MainForce
         {
@@ -58,6 +61,7 @@ namespace PolyRocket.Game
         {
             LaunchTime.Value = 0f;
             Height.Value = 0f;
+            Actors = new List<PrActor>();
 
             PrCameraManager.Instance.AddWorldCamera(m_LevelCamera);
         }

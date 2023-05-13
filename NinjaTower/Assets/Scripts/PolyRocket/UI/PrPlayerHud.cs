@@ -1,6 +1,7 @@
 ﻿using System;
 using Carotaa.Code;
 using PolyRocket.Game;
+using PolyRocket.Game.Actor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

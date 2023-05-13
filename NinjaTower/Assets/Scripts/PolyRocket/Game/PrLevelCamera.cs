@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PolyRocket.Game.Actor;
 using UnityEngine;
 
 namespace PolyRocket.Game

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace PolyRocket.Game
+﻿namespace PolyRocket.Game.Actor
 {
     // base class for all env triggers
     public abstract class PrTrigger: PrActor

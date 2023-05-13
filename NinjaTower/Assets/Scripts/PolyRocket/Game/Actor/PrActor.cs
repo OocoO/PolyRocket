@@ -1,11 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace PolyRocket.Game
+namespace PolyRocket.Game.Actor
 {
     public class PrActor : MonoBehaviour
     {
         private PrLevel _level;
+        
+        public virtual Vector2 Position => transform.position;
 
         public PrLevel Level
         {
@@ -17,6 +18,16 @@ namespace PolyRocket.Game
 
                 return _level;
             }
+        }
+
+        public virtual void Start()
+        {
+            Level.Actors.Add(this);
+        }
+
+        public virtual void OnDestroy()
+        {
+            Level.Actors.Remove(this);
         }
     }
 }

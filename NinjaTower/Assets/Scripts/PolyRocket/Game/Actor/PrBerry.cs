@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-namespace PolyRocket.Game
+namespace PolyRocket.Game.Actor
 {
     public class PrBerry : PrTrigger
     {

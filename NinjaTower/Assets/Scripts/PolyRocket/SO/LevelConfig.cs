@@ -3,11 +3,13 @@ using UnityEngine.Serialization;
 
 namespace PolyRocket.SO
 {
-    [CreateAssetMenu(menuName = "Rocket/Level Config")]
+    [CreateAssetMenu(menuName = "PolyRocket/Level Config")]
     public class LevelConfig : ScriptableObject
     {
         [FormerlySerializedAs("m_maxGameTime")] public float m_CameraRefTime;
-        public AnimationCurve m_cameraSpeedCurve;
+
+        public ElementGenerator[] m_Elements;
+        
         public float m_CameraSoftZoom;
         public float m_CameraHardZoom;
 

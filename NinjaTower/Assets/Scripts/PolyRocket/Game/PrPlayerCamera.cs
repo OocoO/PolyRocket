@@ -1,5 +1,6 @@
 ﻿using Carotaa.Code;
 using DG.Tweening;
+using PolyRocket.Game.Actor;
 using UnityEngine;
 
 namespace PolyRocket.Game

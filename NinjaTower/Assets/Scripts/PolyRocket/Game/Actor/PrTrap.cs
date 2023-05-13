@@ -1,8 +1,7 @@
 ﻿using Carotaa.Code;
 using PolyRocket.UI;
-using UnityEngine;
 
-namespace PolyRocket.Game
+namespace PolyRocket.Game.Actor
 {
     // Hit the trap, game over
     public class PrTrap: PrTrigger
