@@ -13,6 +13,14 @@ namespace PolyRocket.Game
         private bool _isLeftBtnDown;
         private bool _isRightBtnDown;
         
+        private enum ActiveModule
+        {
+            None,
+            Left,
+            Right,
+            Main
+        }
+        
         public PrPlayerInput(PrPlayer player)
         {
             UIManager.Instance.Push<PrPlayerHud>(player);
@@ -68,11 +76,24 @@ namespace PolyRocket.Game
             
             if (leftUp) SetLeftButtonDown(false);
             if (rightUp) SetRightButtonDown(false);
+
+            var module = ActiveModule.None;
+            if (_isLeftBtnDown && !_isRightBtnDown)
+            {
+                module = ActiveModule.Left;
+            }
+            else if (!_isLeftBtnDown && _isRightBtnDown)
+            {
+                module = ActiveModule.Right;
+            }
+            else if (_isLeftBtnDown && _isRightBtnDown)
+            {
+                module = ActiveModule.Main;
+            }
             
-            
-            _player.SideLeft.SetActive(_isLeftBtnDown);
-            _player.SideRight.SetActive(_isRightBtnDown);
-            _player.Main.SetActive(_isLeftBtnDown && _isRightBtnDown);
+            _player.SideLeft.SetActive(module == ActiveModule.Left);
+            _player.SideRight.SetActive(module == ActiveModule.Right);
+            _player.Main.SetActive(module == ActiveModule.Main);
         }
         
 

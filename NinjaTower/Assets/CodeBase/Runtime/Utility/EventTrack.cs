@@ -1,17 +1,17 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Carotaa.Code
 {
     // Custom log class
-    public class EventTrack : Singleton<EventTrack>
+    public class EventTrack : MonoSingleton<EventTrack>
     {
-        private const int TraceSize = 100;
-        private CycleArray<object> _trace;
-
-        protected override void OnCreate()
+        public Dictionary<string, object> DebugParams;
+        
+        private void Awake()
         {
-            _trace = new CycleArray<object>(TraceSize);
+            DebugParams = new Dictionary<string, object>();
         }
 
         public static void LogError(object message)
@@ -22,6 +22,11 @@ namespace Carotaa.Code
         public static void Log(object message)
         {
             Debug.Log(message);
+        }
+
+        public static void LogParam(string key, object param)
+        {
+            Instance.DebugParams[key] = param;
         }
     }
 }

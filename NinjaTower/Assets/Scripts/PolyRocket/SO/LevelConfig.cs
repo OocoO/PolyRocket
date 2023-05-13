@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PolyRocket.SO
 {
     [CreateAssetMenu(menuName = "Rocket/Level Config")]
-    public class LevelConfig: ScriptableObject
+    public class LevelConfig : ScriptableObject
     {
-        public float m_maxGameTime;
+        [FormerlySerializedAs("m_maxGameTime")] public float m_CameraRefTime;
         public AnimationCurve m_cameraSpeedCurve;
         public float m_CameraSoftZoom;
         public float m_CameraHardZoom;
 
         // Player Relative Config
         public float LaunchSpeed;
-        public float ClickPowerOrigin;
-        public float ClickPowerPerBerry;
-        
+        public float m_ForcePerBerry;
+
         public float GravityScale;
         public float SpeedDcc;
 
@@ -22,10 +22,8 @@ namespace PolyRocket.SO
         public float m_SideForce;
         public float m_LeftForceDirect;
 
-        public float GetCameraSpeed(float time)
-        {
-            var normalizedTime = time / m_maxGameTime;
-            return m_cameraSpeedCurve.Evaluate(normalizedTime);
-        }
+
+        // Camera Relative Config
+        public float m_MaxCameraSpeedScale; // relative to player speed
     }
 }

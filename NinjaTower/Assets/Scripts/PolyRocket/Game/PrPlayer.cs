@@ -96,7 +96,7 @@ namespace PolyRocket.Game
         // reflection: state machine
         private void Idle_OnUpdate()
         {
-            if (SideLeft.IsActive && SideRight.IsActive)
+            if (Main.IsActive)
             {
                 // launch
                 StateMachine.ChangeState(State.Launch);
@@ -121,27 +121,22 @@ namespace PolyRocket.Game
             {
                 module.OnFixedUpdate();
             }
-        }
 
-        private void Launch_OnPointerClick(PointerEventData data)
-        {
-            var clickWorldPos = _levelCamera.ScreenToWorldPoint(data.position);
-
-            var playerPos = transform.position;
-            var direct = ((Vector2) (clickWorldPos - playerPos)).normalized;
-
-            m_rb.AddForce(direct * Level.GetClickPower(), ForceMode2D.Impulse);
+            _cameraModule.FixedUpdate();
         }
 
         private void LateFixedUpdate()
         {
             // velocity dcc
-            m_rb.velocity *= Level.Config.SpeedDcc;
+            var velocity = m_rb.velocity;
+            velocity *= Level.Config.SpeedDcc;
+            m_rb.velocity = velocity;
+            EventTrack.LogParam("PlayerVelocity.y", velocity.y);
 
             // Move Player to Another Screen Border When out of screen
             var camBounds = Level.m_LevelCamera.GetViewBound(1.05f);
             var currentPos = m_rb.position;
-            if (camBounds.Contains(currentPos))
+            if (currentPos.x > camBounds.min.x && currentPos.x < camBounds.max.x)
             {
                 return;
             }

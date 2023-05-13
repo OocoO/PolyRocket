@@ -75,7 +75,7 @@ namespace PolyRocket.Game
 
             if (IsActive)
             {
-                Rb.AddForce(Vector2.up * Level.Config.m_MainForce);
+                Rb.AddForce(Vector2.up * Level.MainForce);
             }
         }
         

@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using Carotaa.Code;
+using DG.Tweening;
 using UnityEngine;
 
 namespace PolyRocket.Game
@@ -13,16 +14,18 @@ namespace PolyRocket.Game
         private PrPlayer _player;
         private Rigidbody2D _rb;
         private float _cameraHalfHeight;
-        private float _time;
+        private float _cameraSpeed;
+        private PrLevel _level;
 
         public PrPlayerCamera(PrPlayer player, Camera camera)
         {
             _player = player;
             _mainCam = camera;
+            _level = player.Level;
             // ReSharper disable once PossibleNullReferenceException
             _rb = _mainCam.GetComponent<Rigidbody2D>();
             _camTrans = _mainCam.transform;
-            _time = 0f;
+            _cameraSpeed = 0f;
 
             SetCameraSize(6f);
             InitPosition();
@@ -38,10 +41,15 @@ namespace PolyRocket.Game
         
         public void Update()
         {
-            _time += Time.deltaTime * Time.timeScale;
+            // do something
+        }
 
+        public void FixedUpdate()
+        {
+            StepCameraSpeed(Time.fixedDeltaTime * Time.timeScale);
+            
             var config = _player.Level.Config;
-            var baseSpeed = config.GetCameraSpeed(_time);
+            var baseSpeed = _cameraSpeed;
 
             var camBottom = _rb.position.y - _cameraHalfHeight;
             var camHeight = _cameraHalfHeight * 2f;
@@ -49,21 +57,15 @@ namespace PolyRocket.Game
             var pos = (playerPos - camBottom) / camHeight;
             
             var inSoftZoom = pos > config.m_CameraSoftZoom;
-            var inHardZoom = pos > config.m_CameraHardZoom;
+            var softScaler = (pos - config.m_CameraSoftZoom) / (config.m_CameraHardZoom - config.m_CameraSoftZoom);
 
             if (inSoftZoom)
             {
-                _rb.velocity = Vector2.up * (baseSpeed + _player.Velocity.y * 0.3f);
+                _rb.velocity = Vector2.up * Mathf.Max(_player.Velocity.y * softScaler, baseSpeed);
             }
             else
             {
                 _rb.velocity = Vector2.up * (baseSpeed);
-            }
-            
-            if (inHardZoom)
-            {
-                _rb.MovePosition(Vector2.up * 
-                                 (playerPos - camHeight * (config.m_CameraHardZoom - 0.5f)));
             }
         }
 
@@ -90,6 +92,23 @@ namespace PolyRocket.Game
         {
             var speedY = _player.Velocity.y;
             return 5f + speedY;
+        }
+
+        // V(n+1) = F(V(n), MaxCameraSpeed)
+        // V = h - h / (5 * t / ref + 1) where h : MaxCameraSpeed
+        // t(n+1) = t(n) + deltaTime
+        private void StepCameraSpeed(float deltaTime)
+        {
+            var refTime = _level.RefTime;
+            var vN = _cameraSpeed;
+            var h = _level.MaxCameraSpeed;
+            
+            var tN = (h / (h - vN) - 1f) * 0.2f * refTime;
+            var tN1 = tN + deltaTime;
+            var vN1 = h - h / (5f * tN1 / refTime + 1f);
+            _cameraSpeed = vN1;
+            
+            EventTrack.LogParam($"CameraBaseSpeed", _cameraSpeed);
         }
     }
 }

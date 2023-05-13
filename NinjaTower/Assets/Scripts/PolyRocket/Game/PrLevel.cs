@@ -19,22 +19,52 @@ namespace PolyRocket.Game
         public readonly ShareVariable<float> LaunchTime = new ShareVariable<float>();
         public readonly ShareVariable<float> Height = new ShareVariable<float>();
 
+        public float MainForce
+        {
+            get
+            {
+                return Config.m_MainForce + BerryCount.Value * Config.m_ForcePerBerry;
+            }
+        }
+        public float Gravity => Physics2D.gravity.y * Config.GravityScale;
+
+        // in theory, this is the max speed player can reach
+        public float MaxPlayerSpeed
+        {
+            get
+            {
+                var deltaTime = Time.fixedDeltaTime;
+                return (MainForce + Gravity) * deltaTime / (1 - Config.SpeedDcc);
+            }
+        }
+
+        public float RefTime
+        {
+            get
+            {
+                return Config.m_CameraRefTime * (1 + BerryCount.Value * 5f);
+            }
+        }
+
+        public float MaxCameraSpeed
+        {
+            get
+            {
+                return MaxPlayerSpeed * Config.m_MaxCameraSpeedScale;
+            }
+        }
+
         public void OnPush()
         {
             LaunchTime.Value = 0f;
             Height.Value = 0f;
-            
+
             PrCameraManager.Instance.AddWorldCamera(m_LevelCamera);
         }
         
         public void OnPop()
         {
             PrCameraManager.Instance.RemoveWorldCamera(m_LevelCamera);
-        }
-        
-        public float GetClickPower()
-        {
-            return Config.ClickPowerOrigin + BerryCount.Value * Config.ClickPowerPerBerry;
         }
     }
 
