@@ -1,4 +1,6 @@
 <linker>
   <!--Preserve types and members in an assembly-->
   <assembly fullname="MonsterLove.StateMachine.Runtime" preserve="all"/>
+  <assembly fullname="ToolBox.Serialization.OdinSerializer" preserve="all"/>
+  <assembly fullname="com.intothedev.savesystem" preserve="all"/>
 </linker>
