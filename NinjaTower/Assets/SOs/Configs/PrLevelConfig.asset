@@ -19,7 +19,7 @@ MonoBehaviour:
   m_CameraSoftZoom: 0.4
   m_CameraHardZoom: 0.6
   LaunchSpeed: 1
-  m_ForcePerBerry: 0.5
+  m_ForcePerBerry: 1
   GravityScale: 0.4
   SpeedDcc: 0.99
   m_MainForce: 8

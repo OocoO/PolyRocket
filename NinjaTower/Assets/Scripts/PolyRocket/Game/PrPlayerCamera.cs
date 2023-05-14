@@ -82,7 +82,7 @@ namespace PolyRocket.Game
         private void SetCameraSize(float halfHeight)
         {
             _cameraHalfHeight = halfHeight;
-            _mainCam.orthographicSize = halfHeight;
+            _level.SetCameraSize(halfHeight);
         }
 
         private float PlayerSpeed2CameraSize()

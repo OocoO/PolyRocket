@@ -21,6 +21,7 @@ namespace PolyRocket.Game
         public readonly ShareVariable<int> BerryCount = new ShareVariable<int>();
         public readonly ShareVariable<float> LaunchTime = new ShareVariable<float>();
         public readonly ShareVariable<float> Height = new ShareVariable<float>();
+        public readonly ShareEvent<float> ECameraSizeChange = new ShareEvent<float>();
 
         [NonSerialized] public List<PrActor> Actors = new List<PrActor>();
 
@@ -71,6 +72,12 @@ namespace PolyRocket.Game
         public void OnPop()
         {
             PrCameraManager.Instance.RemoveWorldCamera(m_LevelCamera);
+        }
+
+        public void SetCameraSize(float halfSize)
+        {
+            m_LevelCamera.orthographicSize = halfSize;
+            ECameraSizeChange.Raise(halfSize);
         }
     }
 
