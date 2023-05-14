@@ -11,7 +11,7 @@ namespace PolyRocket.SO
         public ElementGenerator[] m_Elements;
         
         public float m_CameraSoftZoom;
-        public float m_CameraHardZoom;
+        public float m_CameraSoftDamp;
 
         // Player Relative Config
         public float LaunchSpeed;
