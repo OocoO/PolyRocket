@@ -12,7 +12,16 @@ namespace PolyRocket.Game
         
         private void Awake()
         {
-            ReleaseInit();
+            Application.targetFrameRate = 60;
+            if (IsDebugBuild())
+            {
+                DebugInit();
+            }
+            else
+            {
+                ReleaseInit();
+            }
+            
             PrCameraManager.Instance.WakeUp();
             UIManager.Instance.WakeUp();
             
@@ -23,11 +32,12 @@ namespace PolyRocket.Game
 
         private void ReleaseInit()
         {
-            if (IsDebugBuild()) return;
-            
-            
             Bugsnag.Start("1234bd155fe29c256a154886bda08b32");
-            m_InGameDebugConsole.SetActive(false);
+        }
+        
+        public void DebugInit()
+        {
+            Object.Instantiate(m_InGameDebugConsole);
         }
 
         public static bool IsDebugBuild()
