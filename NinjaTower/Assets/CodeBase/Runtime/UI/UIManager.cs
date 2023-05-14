@@ -10,7 +10,7 @@ namespace Carotaa.Code
         private const int PanelInterval = 100;
 
         // [SerializeField] private Camera m_camera;
-        [SerializeField] private Canvas m_rootCanvas;
+        [SerializeField] private Transform m_RootTrans;
         private bool _isQuit = false;
 
         private LinkedList<UIPage> _pageStack = new();
@@ -33,7 +33,7 @@ namespace Carotaa.Code
 
             var panelPath = GetPageAddress(pageType);
             var prefab = Resources.Load<GameObject>(panelPath);
-            var panel = Instantiate(prefab, m_rootCanvas.transform);
+            var panel = Instantiate(prefab, m_RootTrans);
             var page = panel.GetComponent<UIPage>();
             _pageStack.AddLast(page);
 
