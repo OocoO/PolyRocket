@@ -7,8 +7,6 @@ namespace PolyRocket.Game
 {
     public class PrPlayerCamera
     {
-        private const float OrthographicCameraSize = 30f;
-        
         private Transform _camTrans;
         private Camera _mainCam;
 
@@ -85,8 +83,6 @@ namespace PolyRocket.Game
         {
             _cameraHalfHeight = halfHeight;
             _mainCam.orthographicSize = halfHeight;
-            var scale = halfHeight / OrthographicCameraSize;
-            _camTrans.localScale = Vector3.one * scale;
         }
 
         private float PlayerSpeed2CameraSize()

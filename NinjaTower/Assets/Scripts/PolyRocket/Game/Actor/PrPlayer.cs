@@ -26,6 +26,7 @@ namespace PolyRocket.Game.Actor
         private GeneratorManager _generator;
         private Camera _levelCamera;
         private List<RocketModule> _rocketModules;
+        private float _initHeight;
 
         public RocketSideModule SideLeft;
         public RocketSideModule SideRight;
@@ -60,6 +61,8 @@ namespace PolyRocket.Game.Actor
             StateMachine.ChangeState(State.Idle);
 
             m_rb.gravityScale = Level.Config.GravityScale;
+
+            StatisticInit();
         }
 
         private void Update()
@@ -152,14 +155,19 @@ namespace PolyRocket.Game.Actor
             var targetPos = new Vector2(targetX, currentPos.y);
             m_rb.position = targetPos;
         }
+        
+        private void StatisticInit()
+        {
+            _initHeight = m_rb.position.y;
+        }
 
         private void StatisticUpdate()
         {
             var height = Level.Height.Value;
-            var currentHeight = m_rb.position.y;
+            var currentHeight = m_rb.position.y - _initHeight;
             if (height < currentHeight)
             {
-                Level.Height.Value= m_rb.position.y;
+                Level.Height.Value = currentHeight;
             }
             
             Level.LaunchTime.Value += Time.deltaTime;

@@ -11,6 +11,8 @@ namespace PolyRocket.Game
     public class PrLevel : MonoBehaviour
     {
         public int version;
+        
+        public const float MaxCameraSize = 24f;
 
         public PrPlayer m_Player;
         public Camera m_LevelCamera;

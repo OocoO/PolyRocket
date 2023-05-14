@@ -9,7 +9,7 @@ namespace PolyRocket.Game
     {
         [SerializeField] private Camera m_MainCam;
         [SerializeField] private Camera m_UiCam;
-        
+
         public void AddWorldCamera(Camera cam)
         {
             // cam.transform.SetParent(m_MainCam.transform);
