@@ -16,6 +16,8 @@ MonoBehaviour:
   m_Elements:
   - {fileID: 11400000, guid: 1d7a280cacf42124a917746951546de2, type: 2}
   - {fileID: 11400000, guid: 8c6d433de2c82734faa5a4a6064fe22d, type: 2}
+  - {fileID: 11400000, guid: 89e2e465865fb9b4e882279f2ef4b475, type: 2}
+  - {fileID: 11400000, guid: 50f6e1429324a3843b4b8df5d707c9a6, type: 2}
   m_CameraSoftZoom: 0.3
   m_CameraSoftDamp: 0.4
   LaunchSpeed: 1
