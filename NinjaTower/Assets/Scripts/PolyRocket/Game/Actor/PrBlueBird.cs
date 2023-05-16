@@ -43,15 +43,7 @@ namespace PolyRocket.Game.Actor
 
         public override void OnTriggerWithPlayer(PrPlayer player)
         {
-            var cam = player.Level.m_LevelCamera;
-            // addition check: both internal camera view
-            var bounds = cam.GetViewBound();
-            var isInSide = bounds.Contains(transform.position);
-            isInSide &= bounds.Contains(player.Position);
-            if (isInSide)
-            {
-                ShowGameOver();
-            }
+            OnTrapEnterWithActor(player, transform);
         }
     }
 }

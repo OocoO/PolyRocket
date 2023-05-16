@@ -2794,8 +2794,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2820439089641339150}
   - component: {fileID: 3206994623994785670}
-  - component: {fileID: 240986566849083237}
   - component: {fileID: 4144060898231709558}
+  - component: {fileID: 2690532763996315720}
   m_Layer: 0
   m_Name: DeadTrap
   m_TagString: Untagged
@@ -2844,18 +2844,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 100, y: 20}
   m_EdgeRadius: 0
---- !u!114 &240986566849083237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1546140489338309387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0306b334338a482985fee9f345c463e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4144060898231709558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2870,7 +2858,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DeadTran: {fileID: 2820439089641339150}
   m_SkyTran: {fileID: 633953288}
-  m_SkyRenderer: {fileID: 633953289}
+--- !u!114 &2690532763996315720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546140489338309387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2704f7433449dc88c425f352f032ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5888083879194279223
 GameObject:
   m_ObjectHideFlags: 0

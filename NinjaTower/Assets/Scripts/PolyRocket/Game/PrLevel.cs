@@ -19,6 +19,7 @@ namespace PolyRocket.Game
         public LevelConfig Config;
 
         public readonly ShareVariable<int> BerryCount = new ShareVariable<int>();
+        public readonly ShareVariable<int> MelonCount = new ShareVariable<int>();
         public readonly ShareVariable<float> LaunchTime = new ShareVariable<float>();
         public readonly ShareVariable<float> Height = new ShareVariable<float>();
         public readonly ShareEvent<float> ECameraSizeChange = new ShareEvent<float>();

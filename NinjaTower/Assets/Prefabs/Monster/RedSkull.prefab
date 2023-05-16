@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3804562693375284152}
   - component: {fileID: 1926229855500849949}
   - component: {fileID: 7905896988915918627}
-  - component: {fileID: 7825676290479129890}
+  - component: {fileID: 3290943362725628236}
   m_Layer: 0
   m_Name: RedSkull
   m_TagString: Untagged
@@ -124,7 +124,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.5, y: 1}
   m_Direction: 0
---- !u!114 &7825676290479129890
+--- !u!114 &3290943362725628236
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,6 +133,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3804562693375284155}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0306b334338a482985fee9f345c463e0, type: 3}
+  m_Script: {fileID: 11500000, guid: 0e88409931c24dd180bfaae9277a6e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

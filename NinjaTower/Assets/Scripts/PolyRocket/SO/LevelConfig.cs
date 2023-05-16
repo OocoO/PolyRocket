@@ -23,6 +23,7 @@ namespace PolyRocket.SO
         public float m_MainForce;
         public float m_SideForce;
         public float m_LeftForceDirect;
+        public float m_SuperForce;
 
 
         // Camera Relative Config

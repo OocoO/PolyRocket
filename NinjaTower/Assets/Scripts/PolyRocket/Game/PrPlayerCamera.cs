@@ -1,4 +1,5 @@
-﻿using Carotaa.Code;
+﻿using System;
+using Carotaa.Code;
 using DG.Tweening;
 using PolyRocket.Game.Actor;
 using UnityEngine;
@@ -7,6 +8,10 @@ namespace PolyRocket.Game
 {
     public class PrPlayerCamera
     {
+        private const float CameraSizeMin = 6f;
+        private const float CameraSizeMid = 12f;
+        private const float CameraSizeMax = 16f;
+        
         private Transform _camTrans;
         private Camera _mainCam;
 
@@ -16,6 +21,8 @@ namespace PolyRocket.Game
         private float _cameraBaseSpeed;
         private PrLevel _level;
         private float _currentVelocity;
+        private float _currentSizeSpeed;
+       
 
         public PrPlayerCamera(PrPlayer player, Camera camera)
         {
@@ -27,7 +34,7 @@ namespace PolyRocket.Game
             _camTrans = _mainCam.transform;
             _cameraBaseSpeed = 0f;
 
-            SetCameraSize(6f);
+            SetCameraSize(CameraSizeMin);
             InitPosition();
         }
 
@@ -42,6 +49,10 @@ namespace PolyRocket.Game
         public void Update()
         {
             // do something
+            // Damp camera zoom
+            var targetSize = State2CameraSize(_player.StateMachine.State);
+            var nextSize = Mathf.SmoothDamp(_cameraHalfHeight, targetSize, ref _currentSizeSpeed, 2f);
+            SetCameraSize(nextSize);
         }
 
         public void FixedUpdate()
@@ -71,12 +82,6 @@ namespace PolyRocket.Game
             }
 
             _rb.MovePosition(Vector2.up * nextPos);
-        }
-
-        public void StartZoomOutAnim()
-        {
-            var tweener = DOTween.To(() => _cameraHalfHeight, SetCameraSize, 12f, 5f);
-            tweener.SetEase(Ease.OutCubic);
         }
 
         private void RefreshCameraSize()
@@ -111,6 +116,21 @@ namespace PolyRocket.Game
             _cameraBaseSpeed = vN1;
             
             EventTrack.LogParam($"CameraBaseSpeed", _cameraBaseSpeed);
+        }
+
+        private static float State2CameraSize(PrPlayer.State state)
+        {
+            switch (state)
+            {
+                case PrPlayer.State.Idle:
+                    return CameraSizeMin;
+                case PrPlayer.State.Launch:
+                    return CameraSizeMid;
+                case PrPlayer.State.SuperRocket:
+                    return CameraSizeMax;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            }
         }
     }
 }

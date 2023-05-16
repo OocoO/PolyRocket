@@ -1,6 +1,7 @@
 ﻿using System;
 using PolyRocket.Game;
 using UnityEngine;
+using Random = System.Random;
 
 namespace PolyRocket.SO
 {
@@ -8,7 +9,7 @@ namespace PolyRocket.SO
     {
         protected PrLevel Level;
         
-        public virtual void Init(PrLevel level)
+        public virtual void Init(PrLevel level, Random random)
         {
             Level = level;
         }

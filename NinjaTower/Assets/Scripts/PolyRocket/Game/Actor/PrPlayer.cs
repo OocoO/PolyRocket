@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Carotaa.Code;
 using MonsterLove.StateMachine;
@@ -11,15 +12,18 @@ namespace PolyRocket.Game.Actor
         {
             Idle,
             Launch,
+            SuperRocket,
         }
 
         public class EventDriver
         {
             public StateEvent OnUpdate;
             public StateEvent OnFixedUpdate;
+            public StateEvent OnTriggerWithWaterMelon;
         }
 
         public Rigidbody2D m_rb;
+        public SpriteRenderer m_Sr;
         
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
@@ -112,24 +116,57 @@ namespace PolyRocket.Game.Actor
         private void Launch_Enter()
         {
             m_rb.AddForce(Level.Config.LaunchSpeed * Vector2.up, ForceMode2D.Impulse);
-            
-            _cameraModule.StartZoomOutAnim();
         }
 
         private void Launch_OnUpdate()
+        {
+            OnFlyUpdate();
+        }
+        
+        private void Launch_OnFixedUpdate()
+        {
+            OnFlyFixedUpdate();
+        }
+
+        private void Launch_OnTriggerWithWaterMelon()
+        {
+            // enter super jump
+            StateMachine.ChangeState(State.SuperRocket);
+        }
+
+        private void SuperRocket_Enter()
+        {
+            MonoHelper.Instance.DispatchAfterSeconds(() =>
+            {
+                StateMachine.ChangeState(State.Launch);
+            }, 3f);
+        }
+        
+        private void SuperRocket_OnUpdate()
+        {
+            OnFlyUpdate();
+        }
+
+        private void SuperRocket_OnFixedUpdate()
+        {
+            m_rb.AddForce(Level.Config.m_SuperForce * Vector2.up, ForceMode2D.Force);
+
+            OnFlyFixedUpdate();
+        }
+
+        private void OnFlyUpdate()
         {
             _cameraModule.Update();
             _generator.Update();
             StatisticUpdate();
         }
-        
-        private void Launch_OnFixedUpdate()
+
+        private void OnFlyFixedUpdate()
         {
             foreach (var module in _rocketModules)
             {
                 module.OnFixedUpdate();
             }
-
             _cameraModule.FixedUpdate();
         }
 

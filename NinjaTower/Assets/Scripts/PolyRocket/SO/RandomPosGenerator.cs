@@ -1,6 +1,7 @@
 ﻿using Carotaa.Code;
 using PolyRocket.Game;
 using UnityEngine;
+using Random = System.Random;
 
 namespace PolyRocket.SO
 {
@@ -18,11 +19,11 @@ namespace PolyRocket.SO
         private Camera _camera;
         private float _timer;
         
-        public override void Init(PrLevel level)
+        public override void Init(PrLevel level, Random random)
         {
-            base.Init(level);
-            
-            _random = new System.Random(7);
+            base.Init(level, random);
+
+            _random = random;
             _camera = Level.m_LevelCamera;
             _lastPos = _camera.transform.position;
         }
@@ -49,7 +50,7 @@ namespace PolyRocket.SO
 
             foreach (var actor in Level.Actors)
             {
-                if ((actor.Position - pos).magnitude < 2f)
+                if ((actor.Position - pos).magnitude < 4f)
                     return false;
             }
 
