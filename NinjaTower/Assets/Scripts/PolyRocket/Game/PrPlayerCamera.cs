@@ -10,7 +10,7 @@ namespace PolyRocket.Game
     {
         private const float CameraSizeMin = 6f;
         private const float CameraSizeMid = 12f;
-        private const float CameraSizeMax = 16f;
+        private const float CameraSizeMax = 24f;
         
         private Transform _camTrans;
         private Camera _mainCam;

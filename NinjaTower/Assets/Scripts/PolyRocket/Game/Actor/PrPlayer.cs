@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Carotaa.Code;
+using DG.Tweening;
 using MonsterLove.StateMachine;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace PolyRocket.Game.Actor
 
         public Rigidbody2D m_rb;
         public SpriteRenderer m_Sr;
+        public Gradient m_SuperColor;
         
         private PrPlayerInput _input;
         private PrPlayerCamera _cameraModule;
@@ -136,10 +138,16 @@ namespace PolyRocket.Game.Actor
 
         private void SuperRocket_Enter()
         {
-            MonoHelper.Instance.DispatchAfterSeconds(() =>
+            var loopCount = 6;
+            var duration = 0.5f;
+            var seq = m_Sr.DOGradientColor(m_SuperColor, duration);
+            seq.SetLoops(loopCount, LoopType.Restart);
+            
+            seq.OnComplete(() =>
             {
+                m_Sr.color = Color.white;
                 StateMachine.ChangeState(State.Launch);
-            }, 3f);
+            });
         }
         
         private void SuperRocket_OnUpdate()
